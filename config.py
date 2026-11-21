@@ -1,0 +1,250 @@
+"""
+config.py — Central configuration for AutoTube.
+
+All tunables live here and are read from environment variables (.env locally,
+GitHub Secrets / repo Variables in Actions).
+"""
+
+import os
+from dataclasses import dataclass, field
+from typing import List
+from dotenv import load_dotenv
+
+load_dotenv()  # loads .env file if present (local dev); GitHub Actions uses Secrets
+
+
+@dataclass
+class Config:
+
+    # ── Free-only mode (default ON) ───────────────────────────────────────────
+    # The pipeline only has free providers (Gemini free tier → Groq free tier). With
+    # FREE_ONLY on it also refuses to start if the environment still asks for one of the
+    # old paid services (see paid_features_in_use).
+    FREE_ONLY: bool = field(
+        default_factory=lambda: os.getenv("FREE_ONLY", "true").lower() != "false"
+    )
+    # Free-tier model lists, tried in order. Free tiers change often — override
+    # with comma-separated env vars instead of editing code.
+    GEMINI_FREE_MODELS: List[str] = field(default_factory=lambda: [
+        m.strip() for m in os.getenv(
+            "GEMINI_FREE_MODELS", "gemini-3.5-flash-lite,gemini-3.8-flash"
+        ).split(",") if m.strip()
+    ])
+    # Gemini 3.x thinking tokens count against max_output_tokens; "low" keeps long JSON
+    # answers from being cut off. "" or "default" = don't send a thinking setting.
+    GEMINI_THINKING_LEVEL: str = field(default_factory=lambda: os.getenv("GEMINI_THINKING_LEVEL", "low"))
+    GROQ_FREE_MODELS: List[str] = field(default_factory=lambda: [
+        m.strip() for m in os.getenv(
+            "GROQ_FREE_MODELS", "openai/gpt-oss-120b,qwen/qwen3-32b"
+        ).split(",") if m.strip()
+    ])
+    # Free keys: https://aistudio.google.com (Gemini), https://console.groq.com (Groq)
+    GEMINI_API_KEY: str = field(default_factory=lambda: os.getenv("GEMINI_API_KEY", ""))
+    GROQ_API_KEY: str = field(default_factory=lambda: os.getenv("GROQ_API_KEY", ""))
+
+    # ── Video style ───────────────────────────────────────────────────────────
+    # "explainer" → Remotion animated explainer (default, see docs/PLAN_EXPLAINER_AND_AI_VIDEO.md)
+    # "kids"      → "Explained Like You're 5" story video (see docs/PLAN_KIDS_EXPLAINER.md)
+    VIDEO_STYLE: str = field(default_factory=lambda: os.getenv("VIDEO_STYLE", "explainer").lower())
+    EXPLAINER_DIR: str = "video/explainer"
+    EXPLAINER_MIN_SECONDS: int = field(default_factory=lambda: int(os.getenv("EXPLAINER_MIN_SECONDS", "240")))
+    EXPLAINER_TARGET_WORDS: int = field(default_factory=lambda: int(os.getenv("EXPLAINER_TARGET_WORDS", "650")))
+    # Auto-publish: "HH:MM" (UTC). Uploads stay Private and YouTube publishes them at the next
+    # occurrence of this time — the gap is your review window (set the video back to Private in
+    # Studio to stop it). Empty = stay Private until you publish by hand.
+    # 18:30 UTC = 2:30 pm US Eastern / 12:00 am IST (weekday long-form sweet spot 2-5 pm local).
+    EXPLAINER_PUBLISH_AT_UTC: str = field(default_factory=lambda: os.getenv("EXPLAINER_PUBLISH_AT_UTC", "").strip())
+    # Narration pace incl. pauses, measured on a real run: 1426 words → 699 s ≈ 122 wpm
+    # (the 89 s fixture looked faster because of its short lines). 125 keeps the estimate
+    # slightly low, so a script that passes the pre-render gate also passes the QA length check.
+    # Run #31 (2026-10-19) measured 1124 words → 594 s ≈ 114 wpm, so 650 words ≈ 5.7 min.
+    EXPLAINER_WPM: int = field(default_factory=lambda: int(os.getenv("EXPLAINER_WPM", "125")))
+    # Playlist title every explainer upload is added to (created on first use). Empty = none.
+    EXPLAINER_PLAYLIST: str = field(default_factory=lambda: os.getenv("EXPLAINER_PLAYLIST", "").strip())
+    # How-it-works videos stay out of the "Run AI Locally" playlist; empty = no playlist.
+    # Explainer scripts written by Claude through the Claude Code CLI on the owner's subscription
+    # (needs the CLAUDE_CODE_OAUTH_TOKEN secret); without it the free models write them.
+    CLAUDE_SCRIPTS: bool = field(default_factory=lambda: os.getenv("CLAUDE_SCRIPTS", "true").lower() == "true")
+    CLAUDE_SCRIPT_MODEL: str = field(default_factory=lambda: os.getenv("CLAUDE_SCRIPT_MODEL", "claude-opus-5-5"))
+    # Claude's tight lines are read fast (measured 125-153 wpm, 601 words came out at 235 s, under
+    # EXPLAINER_MIN_SECONDS), so it is asked for more words, and asked once to lengthen a script
+    # that comes back under CLAUDE_MIN_WORDS (680 words ≈ 4.4 min even at 153 wpm).
+    # Kids scripts too (each step: plan, script, review, length, Short); off → free models only.
+    CLAUDE_KIDS: bool = field(default_factory=lambda: os.getenv("CLAUDE_KIDS", "true").lower() == "true")
+    CLAUDE_TARGET_WORDS: int = field(default_factory=lambda: int(os.getenv("CLAUDE_TARGET_WORDS", "760")))
+    CLAUDE_MIN_WORDS: int = field(default_factory=lambda: int(os.getenv("CLAUDE_MIN_WORDS", "680")))
+    # Daily trend check (agents/trend_agent.py): a new, popular open model beats the topic bank.
+    EXPLAINER_TRENDS: bool = field(default_factory=lambda: os.getenv("EXPLAINER_TRENDS", "true").lower() == "true")
+    TREND_MAX_AGE_DAYS: int = field(default_factory=lambda: int(os.getenv("TREND_MAX_AGE_DAYS", "14")))
+    TREND_MIN_LIKES: int = field(default_factory=lambda: int(os.getenv("TREND_MIN_LIKES", "250")))
+    # skip new models bigger than this (billions of parameters). Not lower: DeepSeek-V4.1-Flash (763 B)
+    # still did well because people search the name; LongCat-2.5 (1.8 trillion) got 19 views
+    TREND_MAX_PARAMS_B: float = field(default_factory=lambda: float(os.getenv("TREND_MAX_PARAMS_B", "1000")))
+    # Trend videos alternate with how-it-works / tool videos: no trend the day after a trend.
+    TREND_ALTERNATE: bool = field(default_factory=lambda: os.getenv("TREND_ALTERNATE", "true").lower() == "true")
+    # On the day after a trend, only a big release still wins: a known lab with this many likes.
+    TREND_BIG_LIKES: int = field(default_factory=lambda: int(os.getenv("TREND_BIG_LIKES", "1000")))
+    # Skip a trend whose kind (OCR, voice, coding...) was covered this many days back.
+    TREND_THEME_DAYS: int = field(default_factory=lambda: int(os.getenv("TREND_THEME_DAYS", "7")))
+    # Topic index: duplicate check by meaning (agents/topic_index.py), on top of the word rules
+    TOPIC_INDEX: bool = field(default_factory=lambda: os.getenv("TOPIC_INDEX", "true").lower() == "true")
+    TOPIC_INDEX_FILE: str = "data/topic_index.npz"
+    # Measured on the channel 2026-11-11: kids repeats score 0.85+ ("chatbot answer" vs "chatbot talk" 0.92);
+    # explainer topics all sit close together (all AI tools: Unsloth vs n8n 0.88), so only near-identical
+    # wording counts there; the same tool is already caught by name (agents/published.py)
+    TOPIC_DUP_SIMILARITY: float = field(default_factory=lambda: float(os.getenv("TOPIC_DUP_SIMILARITY", "0.85")))
+    EXPLAINER_DUP_SIMILARITY: float = field(default_factory=lambda: float(os.getenv("EXPLAINER_DUP_SIMILARITY", "0.93")))
+    # Between these and the lines above, a score cannot tell a repeat from a related topic ("Why do prices
+    # jump up?" vs "Why do things cost more?" 0.77 is a repeat, "Why do house prices change?" 0.79 is not),
+    # so an AI judge reads the closest past topics and decides (agents/topic_judge.py)
+    TOPIC_JUDGE: bool = field(default_factory=lambda: os.getenv("TOPIC_JUDGE", "true").lower() == "true")
+    TOPIC_JUDGE_MODEL: str = field(default_factory=lambda: os.getenv("TOPIC_JUDGE_MODEL", "claude-sonnet-5-5"))
+    KIDS_JUDGE_FROM: float = field(default_factory=lambda: float(os.getenv("KIDS_JUDGE_FROM", "0.68")))
+    EXPLAINER_JUDGE_FROM: float = field(default_factory=lambda: float(os.getenv("EXPLAINER_JUDGE_FROM", "0.78")))
+    # Weekly plan (scripts/plan_week.py): the daily runs take their topic from it when it has one for today
+    WEEK_PLAN: bool = field(default_factory=lambda: os.getenv("WEEK_PLAN", "true").lower() == "true")
+    WEEK_PLAN_FILE: str = "data/week_plan.json"
+    CONTENT_DB_FILE: str = "data/content_db.json"
+    YT_TREND_QUERIES: str = field(default_factory=lambda: os.getenv(
+        "YT_TREND_QUERIES", "run llm locally,local ai model test,ollama,new open source ai model,"
+                            "ai explained simply,explained like you're 5,how ai works"))
+    EXPLAINER_CONCEPT_PLAYLIST: str = field(default_factory=lambda: os.getenv("EXPLAINER_CONCEPT_PLAYLIST", "").strip())
+    # Vertical Short cut from each explainer's opening (≤ 58 s), uploaded as a second video that
+    # links the full one. Publish time defaults to EXPLAINER_PUBLISH_AT_UTC.
+    EXPLAINER_SHORTS: bool = field(default_factory=lambda: os.getenv("EXPLAINER_SHORTS", "true").lower() != "false")
+    EXPLAINER_SHORT_PUBLISH_AT_UTC: str = field(default_factory=lambda: os.getenv("EXPLAINER_SHORT_PUBLISH_AT_UTC", "").strip())
+
+    # "bank" = evergreen tool topics from data/explainer_topics.json, news feeds only when the
+    # bank is used up; "feed" = news feeds only (research_agent scoring).
+    EXPLAINER_TOPIC_MODE: str = field(default_factory=lambda: os.getenv("EXPLAINER_TOPIC_MODE", "bank").lower())
+    EXPLAINER_TOPICS_FILE: str = "data/explainer_topics.json"
+    # Tech story every other day from 2026-11-17 (agents/story_agent.py): side-by-side test of news
+    # stories against the tool and new-model videos
+    EXPLAINER_STORIES: bool = field(default_factory=lambda: os.getenv("EXPLAINER_STORIES", "true").lower() == "true")
+    # New-model days: run a small GGUF copy with llama.cpp on the runner and put the measured speed and
+    # memory in the video (agents/model_bench.py); files above MODEL_BENCH_MAX_GB are reported as too big
+    MODEL_BENCH: bool = field(default_factory=lambda: os.getenv("MODEL_BENCH", "true").lower() == "true")
+    MODEL_BENCH_MAX_GB: float = field(default_factory=lambda: float(os.getenv("MODEL_BENCH_MAX_GB", "9")))
+    MODEL_BENCH_TIMEOUT: int = field(default_factory=lambda: int(os.getenv("MODEL_BENCH_TIMEOUT", "900")))
+
+    # ── Kids track: "Explained Like You're 5" (VIDEO_STYLE=kids, see docs/PLAN_KIDS_EXPLAINER.md) ──
+    # 2-3 minute story videos (recurring cast + prop kit, pycairo renderer). All ages, NOT made for kids.
+    KIDS_TARGET_WORDS: int = field(default_factory=lambda: int(os.getenv("KIDS_TARGET_WORDS", "300")))
+    KIDS_MIN_SECONDS: int = field(default_factory=lambda: int(os.getenv("KIDS_MIN_SECONDS", "90")))
+    KIDS_MAX_SECONDS: int = field(default_factory=lambda: int(os.getenv("KIDS_MAX_SECONDS", "180")))
+    # Slow, friendly pace incl. pauses (the stock-market POC: 318 words → 119 s ≈ 160 wpm incl. gaps)
+    KIDS_WPM: int = field(default_factory=lambda: int(os.getenv("KIDS_WPM", "140")))
+    KIDS_TTS: str = field(default_factory=lambda: os.getenv("KIDS_TTS", "kokoro").lower())
+    KIDS_KOKORO_VOICE: str = field(default_factory=lambda: os.getenv("KIDS_KOKORO_VOICE", "af_heart"))
+    KIDS_KOKORO_SPEED: float = field(default_factory=lambda: float(os.getenv("KIDS_KOKORO_SPEED", "0.92")))
+    PIPER_MODEL: str = field(default_factory=lambda: os.getenv("PIPER_MODEL", ""))
+    KIDS_PUBLISH_AT_UTC: str = field(default_factory=lambda: os.getenv("KIDS_PUBLISH_AT_UTC", "").strip())
+    # Playlist title every kids upload is added to (created on first use); also the first tag.
+    KIDS_PLAYLIST: str = field(default_factory=lambda: os.getenv("KIDS_PLAYLIST", "Explained Like You're 5"))
+    # Vertical 9:16 cut of every kids video, uploaded as a second video (a YouTube Short).
+    KIDS_SHORTS: bool = field(default_factory=lambda: os.getenv("KIDS_SHORTS", "true").lower() != "false")
+    # "HH:MM" UTC for the Short; empty = same time as the full video (KIDS_PUBLISH_AT_UTC).
+    KIDS_SHORT_PUBLISH_AT_UTC: str = field(default_factory=lambda: os.getenv("KIDS_SHORT_PUBLISH_AT_UTC", "").strip())
+    # "mixed" = headline→concept first, evergreen bank as fallback; "bank" = bank only; "feed" = headlines only
+    KIDS_TOPIC_MODE: str = field(default_factory=lambda: os.getenv("KIDS_TOPIC_MODE", "mixed").lower())
+    # Order of topic areas, one per day, repeating. "ai" (how AI works, AI on your own computer)
+    # leads into the explainers; the two AI kids Shorts were among the four that took off (2026-10).
+    KIDS_AREA_CYCLE: str = field(default_factory=lambda: os.getenv("KIDS_AREA_CYCLE", "ai,tech,ai,finance").lower())
+    KIDS_TOPICS_FILE: str = "data/kids_topics.json"
+    KIDS_HISTORY_FILE: str = "data/kids_topics_history.json"
+
+    # ── Voice (Kokoro, offline, Apache-2.0) ───────────────────────────────────
+    KOKORO_VOICE: str = field(default_factory=lambda: os.getenv("KOKORO_VOICE", "am_michael"))
+    KOKORO_SPEED: float = field(default_factory=lambda: float(os.getenv("KOKORO_SPEED", "1.05")))
+    # "whisper" = word timings from faster-whisper (falls back automatically), "proportional" = estimate
+    WORD_TIMINGS: str = field(default_factory=lambda: os.getenv("WORD_TIMINGS", "whisper").lower())
+
+    # ── Channel ───────────────────────────────────────────────────────────────
+    CHANNEL_NAME: str = field(default_factory=lambda: os.getenv("CHANNEL_NAME", "Run It Local"))
+    CHANNEL_TAGLINE: str = field(default_factory=lambda: os.getenv(
+        "CHANNEL_TAGLINE", "Free & open-source AI you can run yourself"))
+    # Public channel page, used for the subscribe link in descriptions. Empty = no link.
+    CHANNEL_URL: str = field(default_factory=lambda: os.getenv(
+        "CHANNEL_URL", "https://www.youtube.com/channel/UCvQ4krhheYmVibo3nfVdrJw").strip())
+    # Sub-niche (2026-09-29): practical, free / open-source AI tools people can run and
+    # use themselves. Evergreen how-to + explainers, fits the animated scene catalogue.
+    CHANNEL_SUBNICHE: str = field(default_factory=lambda: os.getenv(
+        "CHANNEL_SUBNICHE",
+        "Practical AI: free and open-source AI tools you can run and use yourself",
+    ))
+    # A research topic must contain at least one of these (case-insensitive) to be used.
+    NICHE_KEYWORDS: List[str] = field(default_factory=lambda: [
+        k.strip().lower() for k in os.getenv("NICHE_KEYWORDS", (
+            "ai,llm,gpt,chatgpt,claude,gemini,llama,mistral,qwen,deepseek,ollama,lm studio,"
+            "open-source model,open source model,open-weight,local model,self-host,"
+            "stable diffusion,whisper,transformer,neural,machine learning,agent,copilot,"
+            "prompt,inference,gpu,quantiz,rag,embedding,fine-tun,hugging face,automation"
+        )).split(",") if k.strip()
+    ])
+
+    # ── Research (agents/research_agent.py) ───────────────────────────────────
+    TOPIC_HISTORY_DAYS: int = 30   # deduplication window (skip topics used recently)
+    TOPICS_PER_RUN: int = 1        # 1 video/day — give each video room to breathe
+    # Reddit often blocks cloud IPs; best-effort
+    ACTIVE_SUBREDDITS: List[str] = field(default_factory=lambda: [
+        "LocalLLaMA", "ollama", "selfhosted", "ArtificialInteligence", "OpenAI", "StableDiffusion",
+    ])
+
+    # ── YouTube upload ────────────────────────────────────────────────────────
+    # YOUTUBE_TOKEN_JSON is either the token JSON itself or a path to it.
+    YOUTUBE_TOKEN_FILE: str = field(
+        default_factory=lambda: os.getenv("YOUTUBE_TOKEN_JSON", "data/youtube_token.json")
+    )
+    VIDEO_CATEGORY_ID: str = "28"   # 28 = Science & Technology
+    # Uploads are PRIVATE by default: a human publishes after review (or *_PUBLISH_AT_UTC does).
+    VIDEO_PRIVACY: str = field(default_factory=lambda: os.getenv("VIDEO_PRIVACY", "private"))
+    # Sets status.containsSyntheticMedia (YouTube "altered or synthetic content" disclosure).
+    VIDEO_SYNTHETIC_MEDIA: bool = field(
+        default_factory=lambda: os.getenv("VIDEO_SYNTHETIC_MEDIA", "true").lower() != "false"
+    )
+    VIDEO_MADE_FOR_KIDS: bool = False
+    PLAYLIST_ENABLED: bool = field(
+        default_factory=lambda: os.getenv("PLAYLIST_ENABLED", "true").lower() != "false"
+    )
+
+    # ── Background music ──────────────────────────────────────────────────────
+    # Only CC0 / royalty-free tracks in data/music/ (licensed music costs revenue share).
+    # Set MUSIC_ENABLED=false to disable background music entirely.
+    MUSIC_ENABLED: bool = field(
+        default_factory=lambda: os.getenv("MUSIC_ENABLED", "true").lower() != "false"
+    )
+
+    # ── Paths ─────────────────────────────────────────────────────────────────
+    DATA_DIR: str = "data"
+    OUTPUT_DIR: str = "outputs"
+    LOG_DIR: str = "logs"
+    MUSIC_DIR: str = "data/music"
+    HISTORY_FILE: str = "data/topics_history.json"
+    POSTED_FILE: str = "data/posted_videos.json"
+
+    def paid_features_in_use(self) -> List[str]:
+        """Old paid-service switches still set in the environment. Empty list = free-only safe.
+        The code for these services is gone; this catches a leftover secret or variable."""
+        paid = []
+        provider = os.getenv("SCRIPT_MODEL_PROVIDER", "").lower()
+        if provider in ("claude", "bedrock"):
+            paid.append(f"SCRIPT_MODEL_PROVIDER={provider} (paid API)")
+        if os.getenv("VIDEO_ANIMATION_MODE", "").lower() == "veo":
+            paid.append("VIDEO_ANIMATION_MODE=veo (Vertex AI, paid)")
+        if os.getenv("GCS_BUCKET_NAME"):
+            paid.append("GCS_BUCKET_NAME set (Cloud Storage backup, paid)")
+        return paid
+
+    def assert_free_only(self) -> None:
+        """Raise if FREE_ONLY is on and a paid service is configured."""
+        if not self.FREE_ONLY:
+            return
+        paid = self.paid_features_in_use()
+        if paid:
+            raise RuntimeError(
+                "FREE_ONLY=true but paid services are configured: " + "; ".join(paid)
+                + ". Unset them, or set FREE_ONLY=false to allow paid services."
+            )
+
+
+config = Config()

@@ -1,0 +1,343 @@
+[
+  {
+    "topic": "GPT 6.1 Sol: Near-Astra intelligence for a fifth of the price",
+    "normalized_topic": "gpt 61 sol nearastra intelligence for a ",
+    "timestamp": "2026-09-30T05:57:25.535870",
+    "used_at": "2026-09-30T05:57:25.535870",
+    "source": "hackernews"
+  },
+  {
+    "topic": "Gemini 4 Argon",
+    "normalized_topic": "gemini 4 argon",
+    "timestamp": "2026-10-01T10:57:48.696057",
+    "used_at": "2026-10-01T10:57:48.696057",
+    "source": "hackernews"
+  },
+  {
+    "topic": "Combining Machine Learning and Homomorphic Encryption in the Apple Ecosystem",
+    "normalized_topic": "combining machine learning and homomorph",
+    "timestamp": "2026-10-02T10:26:27.314000",
+    "used_at": "2026-10-02T10:26:27.314000",
+    "source": "hackernews"
+  },
+  {
+    "topic": "AI ‘godfather’ Yann LeCun has ‘zero concerns’ about human extinction, says Anthropic CEO Dario Amodei is ‘deluded’",
+    "normalized_topic": "ai godfather yann lecun has zero concern",
+    "timestamp": "2026-10-03T09:51:06.896375",
+    "used_at": "2026-10-03T09:51:06.896375",
+    "source": "lobsters"
+  },
+  {
+    "topic": "Ollama explained: run AI models on your own computer for free",
+    "normalized_topic": "ollama explained run ai models on your o",
+    "timestamp": "2026-10-09T11:28:36.340965",
+    "used_at": "2026-10-09T11:28:36.340965",
+    "source": "bank"
+  },
+  {
+    "topic": "Open WebUI: a free ChatGPT-style interface for your own local AI",
+    "normalized_topic": "open webui a free chatgptstyle interface",
+    "timestamp": "2026-10-10T10:35:18.558750",
+    "used_at": "2026-10-10T10:35:18.558750",
+    "source": "bank"
+  },
+  {
+    "topic": "llama.cpp explained: the engine behind most local AI apps",
+    "normalized_topic": "llamacpp explained the engine behind mos",
+    "timestamp": "2026-10-11T10:48:26.545388",
+    "used_at": "2026-10-11T10:48:26.545388",
+    "source": "bank"
+  },
+  {
+    "topic": "Whisper: free speech-to-text you can run on your own computer",
+    "normalized_topic": "whisper free speechtotext you can run on",
+    "timestamp": "2026-10-12T11:33:00.330075",
+    "used_at": "2026-10-12T11:33:00.330075",
+    "source": "bank"
+  },
+  {
+    "topic": "ComfyUI explained: make AI images locally with a node graph",
+    "normalized_topic": "comfyui explained make ai images locally",
+    "timestamp": "2026-10-13T11:14:25.383837",
+    "used_at": "2026-10-13T11:14:25.383837",
+    "source": "bank"
+  },
+  {
+    "topic": "AnythingLLM: chat with your own documents using a private local AI",
+    "normalized_topic": "anythingllm chat with your own documents",
+    "timestamp": "2026-10-14T09:25:37.533251",
+    "used_at": "2026-10-14T09:25:37.533251",
+    "source": "bank"
+  },
+  {
+    "topic": "Jan: an open-source ChatGPT alternative that runs fully offline",
+    "normalized_topic": "jan an opensource chatgpt alternative th",
+    "timestamp": "2026-10-15T09:10:42.251453",
+    "used_at": "2026-10-15T09:10:42.251453",
+    "source": "bank"
+  },
+  {
+    "topic": "GPT4All: run a private AI chatbot on an ordinary laptop",
+    "normalized_topic": "gpt4all run a private ai chatbot on an o",
+    "timestamp": "2026-10-16T08:53:07.132878",
+    "used_at": "2026-10-16T08:53:07.132878",
+    "source": "bank"
+  },
+  {
+    "topic": "Wan2GP: free AI video generation on a low-VRAM graphics card",
+    "normalized_topic": "wan2gp free ai video generation on a low",
+    "timestamp": "2026-10-17T08:30:18.687129",
+    "used_at": "2026-10-17T08:30:18.687129",
+    "source": "bank"
+  },
+  {
+    "topic": "Aider: free AI pair programming in your terminal",
+    "normalized_topic": "aider free ai pair programming in your t",
+    "timestamp": "2026-10-18T08:36:51.397144",
+    "used_at": "2026-10-18T08:36:51.397144",
+    "source": "bank"
+  },
+  {
+    "topic": "LocalAI: a free, self-hosted replacement for the OpenAI API",
+    "normalized_topic": "localai a free selfhosted replacement fo",
+    "timestamp": "2026-10-19T09:40:00.401283",
+    "used_at": "2026-10-19T09:40:00.401283",
+    "source": "bank"
+  },
+  {
+    "topic": "Kokoro: a tiny open-source AI voice model that sounds human",
+    "normalized_topic": "kokoro a tiny opensource ai voice model ",
+    "timestamp": "2026-10-20T09:22:28.964269",
+    "used_at": "2026-10-20T09:22:28.964269",
+    "source": "bank"
+  },
+  {
+    "topic": "whisper.cpp: fast offline transcription on any computer",
+    "normalized_topic": "whispercpp fast offline transcription on",
+    "timestamp": "2026-10-21T09:03:46.057189",
+    "used_at": "2026-10-21T09:03:46.057189",
+    "source": "bank"
+  },
+  {
+    "topic": "Text Generation WebUI: the all-in-one app for running local AI language models",
+    "normalized_topic": "text generation webui the allinone app f",
+    "timestamp": "2026-10-22T09:09:21.488486",
+    "used_at": "2026-10-22T09:09:21.488486",
+    "source": "bank"
+  },
+  {
+    "topic": "Stable Diffusion WebUI: generate AI images on your own PC",
+    "normalized_topic": "stable diffusion webui generate ai image",
+    "timestamp": "2026-10-23T14:14:44.349021",
+    "used_at": "2026-10-23T14:14:44.349021",
+    "source": "bank"
+  },
+  {
+    "topic": "Ollama on Windows: install it and run your first local AI model",
+    "normalized_topic": "ollama on windows install it and run you",
+    "timestamp": "2026-10-24T08:40:16.147500",
+    "used_at": "2026-10-24T08:40:16.147500",
+    "source": "bank"
+  },
+  {
+    "topic": "n8n: build AI automations yourself with an open-source workflow tool",
+    "normalized_topic": "n8n build ai automations yourself with a",
+    "timestamp": "2026-10-25T08:53:40.535462",
+    "used_at": "2026-10-25T08:53:40.535462",
+    "source": "bank"
+  },
+  {
+    "topic": "Best local AI model for your graphics card: 8, 16 or 24 GB",
+    "normalized_topic": "best local ai model for your graphics ca",
+    "timestamp": "2026-10-26T09:21:47.985390",
+    "used_at": "2026-10-26T09:21:47.985390",
+    "source": "bank"
+  },
+  {
+    "topic": "ComfyUI on a low-VRAM GPU: make AI images with 6 to 8 GB",
+    "normalized_topic": "comfyui on a lowvram gpu make ai images ",
+    "timestamp": "2026-10-27T09:28:12.354746",
+    "used_at": "2026-10-27T09:28:12.354746",
+    "source": "bank"
+  },
+  {
+    "topic": "gpt-oss: run OpenAI's open-weight model on your own PC",
+    "normalized_topic": "gptoss run openais openweight model on y",
+    "timestamp": "2026-10-28T10:12:46.539344",
+    "used_at": "2026-10-28T10:12:46.539344",
+    "source": "bank"
+  },
+  {
+    "topic": "DeepSeek-V4.1-Flash: the new AI model that reads images and text from deepseek-ai, and can you run it at home?",
+    "normalized_topic": "deepseekv41flash the new ai model that r",
+    "timestamp": "2026-10-29T10:27:22.950928",
+    "used_at": "2026-10-29T10:27:22.950928",
+    "source": "trend"
+  },
+  {
+    "topic": "LFM3-1.7B: the new AI language model from LiquidAI, and can you run it at home?",
+    "normalized_topic": "lfm317b the new ai language model from l",
+    "timestamp": "2026-10-30T10:28:42.962902",
+    "used_at": "2026-10-30T10:28:42.962902",
+    "source": "trend"
+  },
+  {
+    "topic": "Unlimited-OCR-2: the new AI model that reads images and text from baidu, and can you run it at home?",
+    "normalized_topic": "unlimitedocr2 the new ai model that read",
+    "timestamp": "2026-10-31T09:58:51.506390",
+    "used_at": "2026-10-31T09:58:51.506390",
+    "source": "trend"
+  },
+  {
+    "topic": "LFM3-Omni-2B: the new AI model for text, images and audio from LiquidAI, and can you run it at home?",
+    "normalized_topic": "lfm3omni2b the new ai model for text ima",
+    "timestamp": "2026-11-01T10:48:26.391023",
+    "used_at": "2026-11-01T10:48:26.391023",
+    "source": "trend"
+  },
+  {
+    "topic": "MiniCPM-OCR-1.0: the new AI model that reads images and text from openbmb, and can you run it at home?",
+    "normalized_topic": "minicpmocr10 the new ai model that reads",
+    "timestamp": "2026-11-02T11:43:33.355508",
+    "used_at": "2026-11-02T11:43:33.355508",
+    "source": "trend"
+  },
+  {
+    "topic": "Mixture of Experts explained: why some huge AI models run fast",
+    "normalized_topic": "mixture of experts explained why some hu",
+    "timestamp": "2026-11-03T15:38:59.635688",
+    "used_at": "2026-11-03T15:38:59.635688",
+    "source": "bank"
+  },
+  {
+    "topic": "Gemma 4: run Google's open model on your own computer with Ollama",
+    "normalized_topic": "gemma 4 run googles open model on your o",
+    "timestamp": "2026-11-04T11:28:04.456687",
+    "used_at": "2026-11-04T11:28:04.456687",
+    "source": "bank"
+  },
+  {
+    "topic": "Kimi-K3.1-Pro: the new AI model that reads images and text from moonshotai, and can you run it at home?",
+    "normalized_topic": "kimik31pro the new ai model that reads i",
+    "timestamp": "2026-11-05T11:26:21.524945",
+    "used_at": "2026-11-05T11:26:21.524945",
+    "source": "trend",
+    "theme": "vision"
+  },
+  {
+    "topic": "How AI picks its next word: greedy, beam search and sampling",
+    "normalized_topic": "how ai picks its next word greedy beam s",
+    "timestamp": "2026-11-06T11:25:44.176220",
+    "used_at": "2026-11-06T11:25:44.176220",
+    "source": "bank"
+  },
+  {
+    "topic": "Quantization explained: how a big AI model fits on a small graphics card",
+    "normalized_topic": "quantization explained how a big ai mode",
+    "timestamp": "2026-11-07T10:43:37.388486",
+    "used_at": "2026-11-07T10:43:37.388486",
+    "source": "bank"
+  },
+  {
+    "topic": "Qwen 3.6: run Alibaba's open model locally with Ollama",
+    "normalized_topic": "qwen 36 run alibabas open model locally ",
+    "timestamp": "2026-11-08T10:52:58.431706",
+    "used_at": "2026-11-08T10:52:58.431706",
+    "source": "bank"
+  },
+  {
+    "topic": "P-H3-Image-Comfy: the new AI image generator from PrunaAI, and can you run it at home?",
+    "normalized_topic": "ph3imagecomfy the new ai image generator",
+    "timestamp": "2026-11-09T12:00:39.343602",
+    "used_at": "2026-11-09T12:00:39.343602",
+    "source": "trend",
+    "theme": "image"
+  },
+  {
+    "topic": "RLHF explained: how AI chatbots learned to give helpful answers",
+    "normalized_topic": "rlhf explained how ai chatbots learned t",
+    "timestamp": "2026-11-10T11:39:46.480466",
+    "used_at": "2026-11-10T11:39:46.480466",
+    "source": "bank"
+  },
+  {
+    "topic": "PrivateGPT: ask an AI about your files without sending them anywhere",
+    "normalized_topic": "privategpt ask an ai about your files wi",
+    "timestamp": "2026-11-11T11:30:16.710135",
+    "used_at": "2026-11-11T11:30:16.710135",
+    "source": "bank"
+  },
+  {
+    "topic": "OpenCode: a free AI coding agent that works with local models",
+    "normalized_topic": "opencode a free ai coding agent that wor",
+    "timestamp": "2026-11-12T11:50:28.457461",
+    "used_at": "2026-11-12T11:50:28.457461",
+    "source": "bank"
+  },
+  {
+    "topic": "Why Llama 3.1 405B needs a data center: the memory math of giant models",
+    "normalized_topic": "why llama 31 405b needs a data center th",
+    "timestamp": "2026-11-13T11:24:34.435330",
+    "used_at": "2026-11-13T11:24:34.435330",
+    "source": "bank"
+  },
+  {
+    "topic": "Strata: run a 125-billion-parameter AI model on a 12 GB graphics card",
+    "normalized_topic": "strata run a 125billionparameter ai mode",
+    "timestamp": "2026-11-14T10:57:40.929908",
+    "used_at": "2026-11-14T10:57:40.929908",
+    "source": "bank"
+  },
+  {
+    "topic": "AI agents explained: models that write code to get things done",
+    "normalized_topic": "ai agents explained models that write co",
+    "timestamp": "2026-11-15T11:24:56.970588",
+    "used_at": "2026-11-15T11:24:56.970588",
+    "source": "bank"
+  },
+  {
+    "topic": "LongCat-2.5: the new AI model that reads images and text from meituan-longcat, and can you run it at home?",
+    "normalized_topic": "longcat25 the new ai model that reads im",
+    "timestamp": "2026-11-16T11:50:51.113002",
+    "used_at": "2026-11-16T11:50:51.113002",
+    "source": "trend",
+    "theme": "vision"
+  },
+  {
+    "topic": "Three small failures took down Microsoft 365: how cascading failures knock out services millions rely on",
+    "normalized_topic": "three small failures took down microsoft",
+    "timestamp": "2026-11-17T12:19:31.151551",
+    "used_at": "2026-11-17T12:19:31.151551",
+    "source": "story"
+  },
+  {
+    "topic": "Inkling-2-Small: the new AI model that reads images and text from thinkingmachines, and can you run it at home?",
+    "normalized_topic": "inkling2small the new ai model that read",
+    "timestamp": "2026-11-18T12:10:42.001008",
+    "used_at": "2026-11-18T12:10:42.001008",
+    "source": "trend",
+    "theme": "vision"
+  },
+  {
+    "topic": "Waymo robotaxis stall on flooded San Francisco streets: how do self-driving cars see the road, and why does water confuse them?",
+    "normalized_topic": "waymo robotaxis stall on flooded san fra",
+    "timestamp": "2026-11-19T12:16:49.248573",
+    "used_at": "2026-11-19T12:16:49.248573",
+    "source": "story"
+  },
+  {
+    "topic": "ZONOS3-Mini: the new AI voice model from Zyphra, and can you run it at home?",
+    "normalized_topic": "zonos3mini the new ai voice model from z",
+    "timestamp": "2026-11-20T12:10:32.410097",
+    "used_at": "2026-11-20T12:10:32.410097",
+    "source": "trend",
+    "theme": "voice"
+  },
+  {
+    "topic": "Researcher plants 2 million trackable secrets into the AI supply chain and they leak: does what you type into AI chatbots really stay private?",
+    "normalized_topic": "researcher plants 2 million trackable se",
+    "timestamp": "2026-11-21T11:42:12.199085",
+    "used_at": "2026-11-21T11:42:12.199085",
+    "source": "story"
+  }
+]

@@ -1,0 +1,454 @@
+"""Kids track ("Explained Like You're 5"): schema, timeline, renderer smoke, script + topic agents (no network)."""
+
+import json
+from pathlib import Path
+
+import cairo
+import pytest
+
+from agents.kids import props as kprops
+from agents.kids import timeline as TLB
+from agents.kids.scenes import SCENES
+from agents.kids_scene_schema import CATALOGUE, CHARACTERS, PROPS, validate_and_repair, word_count
+from agents.kids.cast import CAST
+
+FIX = Path(__file__).parent / "fixtures"
+
+
+def load(name):
+    return json.loads((FIX / name).read_text())
+
+
+# ── schema ────────────────────────────────────────────────────────────────────
+def test_catalogue_and_renderer_in_sync():
+    assert set(CATALOGUE) == set(SCENES)
+    assert set(PROPS) == set(kprops.NAMES)
+    assert set(CHARACTERS) == set(CAST)
+
+
+@pytest.mark.parametrize("name", list(CATALOGUE))
+def test_every_example_validates_clean(name):
+    spec = CATALOGUE[name]
+    hi = 1 + len(spec["example"]["buyers"]) if name == "trade" else spec["lines"][1]
+    lines = [{"text": f"line {i} words here"} for i in range(hi)]
+    sc = {"type": name, "props": spec["example"], "lines": lines}
+    script = {"scenes": [sc, {"type": "outro", "props": {"cast": ["mia"]}, "lines": ["Bye!"]}]}
+    safe, repairs = validate_and_repair(script)
+    assert safe["scenes"][0]["type"] == name
+    assert not [r for r in repairs if r.startswith("scene 0")], repairs
+
+
+def test_repairs_bad_llm_output():
+    script = {"scenes": [
+        {"type": "title", "props": {"question": "Why is the sky blue?"}, "lines": ["Hi friend!"]},
+        {"type": "laser_show", "lines": [{"text": "Pew pew lasers everywhere"}]},
+        {"type": "meet", "props": {"who": "gandalf", "place": "castle"}, "lines": [{"text": "This is Mia.", "cue": "banana"}]},
+        {"type": "reveal", "props": {"word": "SKY"}, "lines": ["One.", "Two.", "Three.", "Four."]},
+        {"type": "split", "props": {"piece_name": "1 PART", "pieces": 99}, "lines": ["Cut it."]},
+        {"type": "trade", "props": {"buyers": []}, "lines": ["Buy it."]},
+        {"lines": []},
+    ]}
+    safe, repairs = validate_and_repair(script)
+    types = [s["type"] for s in safe["scenes"]]
+    assert types == ["title", "talk", "meet", "reveal", "split", "talk", "outro"]
+    meet = safe["scenes"][2]
+    assert meet["props"]["who"] == "mia" and meet["props"]["place"] == "stand"
+    assert "cue" not in meet["lines"][0]
+    assert len(safe["scenes"][3]["lines"]) == 2 and "Four." in safe["scenes"][3]["lines"][1]["text"]
+    assert safe["scenes"][4]["props"]["pieces"] == 12
+    assert any("added an 'outro'" in r for r in repairs)
+
+
+def test_no_narration_raises():
+    with pytest.raises(ValueError):
+        validate_and_repair({"scenes": [{"type": "title", "lines": []}]})
+
+
+@pytest.mark.parametrize("fixture", ["kids_stock_market.json", "kids_internet.json"])
+def test_fixtures_are_valid_and_short(fixture):
+    safe, repairs = validate_and_repair(load(fixture))
+    assert not repairs, repairs
+    assert 150 <= word_count(safe) <= 380  # ≈ 1.5-3 minutes
+
+
+# ── timeline ─────────────────────────────────────────────────────────────────
+def fake_voiced(script, speech=2.0):
+    out = []
+    for sc in script["scenes"]:
+        row = []
+        for ln in sc["lines"]:
+            words = ln["text"].split()
+            step = speech / len(words)
+            row.append({"dur": speech, "speech": speech,
+                        "words": [(w, i * step, (i + 1) * step) for i, w in enumerate(words)]})
+        out.append(row)
+    return out
+
+
+def test_timeline_beats_follow_lines_and_cues():
+    safe, _ = validate_and_repair(load("kids_stock_market.json"))
+    TL = TLB.build(safe, fake_voiced(safe))
+    assert TL["scenes"][0]["start"] == TLB.LEAD_S
+    for sc in TL["scenes"]:
+        assert len(sc["beats"]) == TLB.n_beats({"type": sc["type"], "props": sc["props"]})
+        assert sc["beats"] == sorted(sc["beats"])
+        assert sc["end"] > sc["start"]
+    price = next(s for s in TL["scenes"] if s["type"] == "price")
+    # "Now it costs three!" with cue "three" → beat 1 fires on the 4th word, not the line start
+    line1_rel = price["lines"][1]["start"] - price["start"]
+    assert price["beats"][1] > line1_rel + 1.0
+    starts = [s["start"] for s in TL["scenes"]]
+    assert starts == sorted(starts)
+    assert TL["duration"] > TL["scenes"][-1]["lines"][-1]["start"]
+
+
+def test_cue_time_multiword():
+    words = [("This", 0.0, 0.2), ("is", 0.2, 0.4), ("the", 0.4, 0.6), ("stock", 0.6, 0.9), ("market!", 0.9, 1.3)]
+    assert TLB.cue_time(words, "the stock") == 0.4
+    assert TLB.cue_time(words, "market") == 0.9
+    assert TLB.cue_time(words, "nope") == 0.0
+
+
+# ── renderer smoke: every scene, every beat, never raises ────────────────────
+@pytest.mark.parametrize("name", list(CATALOGUE))
+def test_scene_renders_at_every_beat(name):
+    from agents.kids import draw as D
+
+    D.ensure_fonts()
+    spec = CATALOGUE[name]
+    safe, _ = validate_and_repair({"scenes": [{"type": name, "props": spec["example"],
+                                               "lines": [f"Line {i} is here" for i in range(spec["lines"][1])]}]})
+    sc = safe["scenes"][0]
+    TL = TLB.build({"scenes": [sc]}, fake_voiced({"scenes": [sc]}))
+    s = TL["scenes"][0]
+    S = {"props": s["props"], "beats": s["beats"], "dur": s["end"] - s["start"], "weather": s["weather"]}
+    surf = cairo.ImageSurface(cairo.FORMAT_RGB24, 480, 270)
+    c = cairo.Context(surf)
+    c.scale(0.25, 0.25)
+    for t in [0.0, 0.3] + [b + d for b in s["beats"] for d in (0.05, 0.6)] + [S["dur"] - 0.1]:
+        c.save()
+        D.background(c, t, s["weather"])
+        SCENES[name](c, t, S)
+        c.restore()
+
+
+def test_every_prop_draws():
+    surf = cairo.ImageSurface(cairo.FORMAT_RGB24, 200, 200)
+    c = cairo.Context(surf)
+    for n in PROPS:
+        kprops.prop(c, n, 100, 100, 150, 1.0)
+
+
+# ── script agent (fake LLM) ──────────────────────────────────────────────────
+class FakeLLM:
+    def __init__(self, answers):
+        self.answers = list(answers)
+        self.prompts = []
+        self.last_model = "fake:model"
+
+    def complete(self, system, user, max_tokens=0, temperature=0.0):
+        self.prompts.append(user)
+        return self.answers.pop(0)
+
+
+PLAN = {"question": "How does the stock market work?", "world": "lemonade stand",
+        "map": [{"real": "share", "kid": "a slice"}], "story": ["a", "b", "c", "d"], "takeaway": "x"}
+
+
+def test_script_agent_happy_path():
+    from agents.kids_script_agent import KidsScriptAgent
+
+    fx = load("kids_stock_market.json")
+    body = {k: fx[k] for k in ("scenes",)}
+    body.update({"title": "Stock market", "tags": ["stocks"], "description": "d"})
+    llm = FakeLLM(["```json\n" + json.dumps(PLAN) + "\n```", json.dumps(body), json.dumps({"ok": True, "problems": []})])
+    s = KidsScriptAgent(llm).generate({"topic": "How does the stock market work?"})
+    assert s["title"].endswith("(Explained Like You're 5)")
+    assert s["tags"][0] == "Explained Like You're 5"
+    assert s["analogy"]["world"] == "lemonade stand"
+    assert s["review"]["ok"] is True
+    assert 90 <= s["estimated_seconds"] <= 180
+    assert "CATALOGUE" in llm.prompts[1] or "beats" in llm.prompts[1]
+
+
+def test_script_agent_fix_round_and_too_long():
+    from agents.kids_script_agent import KidsScriptAgent
+
+    fx = load("kids_stock_market.json")
+    body = {"scenes": fx["scenes"], "title": "How does the stock market work?", "tags": [], "description": ""}
+    llm = FakeLLM([json.dumps(PLAN), json.dumps(body),
+                   json.dumps({"ok": False, "problems": ["line 3 gives advice"]}), json.dumps(body)])
+    s = KidsScriptAgent(llm).generate({"topic": "q"})
+    assert s["review"]["fixed"] is True and s["review"]["problems"] == ["line 3 gives advice"]
+
+    # A "fix" that cuts the script below the minimum length is thrown away.
+    cut = {"scenes": fx["scenes"][:1] + fx["scenes"][-2:], "title": "t"}
+    llm = FakeLLM([json.dumps(PLAN), json.dumps(body),
+                   json.dumps({"ok": False, "problems": ["line 3 gives advice"]}), json.dumps(cut)])
+    s = KidsScriptAgent(llm).generate({"topic": "q"})
+    assert s["review"]["fixed"] is False
+    assert len(s["scenes"]) == len(fx["scenes"])
+
+    long = {"scenes": fx["scenes"] * 3, "title": "t"}
+    llm = FakeLLM([json.dumps(PLAN), json.dumps(long), json.dumps(long), json.dumps(long),
+                   json.dumps({"ok": True, "problems": []})])
+    with pytest.raises(RuntimeError, match="too long"):
+        KidsScriptAgent(llm).generate({"topic": "q"})
+
+
+# ── topic agent ──────────────────────────────────────────────────────────────
+def test_topic_agent_bank_alternates_and_records(tmp_path, monkeypatch):
+    from agents import kids_topic_agent as KT
+    from config import config
+
+    hist = tmp_path / "hist.json"
+    hist.write_text("[]")
+    monkeypatch.setattr(config, "KIDS_HISTORY_FILE", str(hist))
+    agent = KT.KidsTopicAgent(llm=FakeLLM([]))
+    monkeypatch.setattr(config, "KIDS_AREA_CYCLE", "ai,tech,ai,finance")
+    first = agent.get_topics(1, mode="bank")[0]
+    assert first["source"] == "bank" and first["area"] == "ai"
+    agent.mark_used([first])
+    second = agent.get_topics(1, mode="bank")[0]
+    assert second["area"] == "tech" and second["topic"] != first["topic"]
+    assert json.loads(hist.read_text())[0]["topic"] == first["topic"]
+
+
+def test_topic_agent_headline_ideas(tmp_path, monkeypatch):
+    from agents import kids_topic_agent as KT
+    from config import config
+
+    monkeypatch.setattr(config, "KIDS_HISTORY_FILE", str(tmp_path / "h.json"))
+    monkeypatch.setattr(config, "KIDS_AREA_CYCLE", "finance")
+    ideas = {"ideas": [{"question": "What is interest?", "area": "finance", "why": "rate cut"},
+                       {"question": "Why did the war start?", "area": "finance", "why": "x"}]}
+    agent = KT.KidsTopicAgent(llm=FakeLLM([json.dumps(ideas)]))
+    monkeypatch.setattr(agent, "headlines", lambda: ["Central bank cuts rates"])
+    got = agent.get_topics(2, mode="mixed")
+    assert got[0]["topic"] == "What is interest?" and got[0]["source"] == "feed"
+    assert got[1]["source"] == "bank"          # blocked idea dropped, bank fills the gap
+
+
+def test_off_area_headline_ideas_give_way_to_the_bank(tmp_path, monkeypatch):
+    from agents import kids_topic_agent as KT
+    from config import config
+
+    monkeypatch.setattr(config, "KIDS_HISTORY_FILE", str(tmp_path / "h.json"))
+    monkeypatch.setattr(config, "KIDS_AREA_CYCLE", "finance")
+    ideas = {"ideas": [{"question": "How do robots see?", "area": "ai", "why": "x"}]}
+    agent = KT.KidsTopicAgent(llm=FakeLLM([json.dumps(ideas)]))
+    monkeypatch.setattr(agent, "headlines", lambda: ["New robot"])
+    got = agent.get_topics(1, mode="mixed")[0]
+    assert got["source"] == "bank" and got["area"] == "finance"
+
+
+# ── vertical Short ───────────────────────────────────────────────────────────
+def test_short_frame_draws_across_the_whole_timeline():
+    from agents.kids import draw as D
+    from agents.kids import short as S
+
+    D.ensure_fonts()
+    safe, _ = validate_and_repair(load("kids_internet.json"))
+    TL = TLB.build(safe, fake_voiced(safe))
+    surf = cairo.ImageSurface(cairo.FORMAT_RGB24, S.SW, S.SH)
+    c = cairo.Context(surf)
+    t = 0.0
+    while t < TL["duration"]:
+        c.save()
+        S.frame(c, TL, t, "How does the internet send a message?", "Run It Local")
+        c.restore()
+        t += 2.5
+    assert S.BAND_Y + S.BAND_H < S.CAPTION_Y < S.SH - 300      # captions sit below the scene, above the Shorts UI
+    assert S.card_title("What Is a Pension? (Explained Like You're 5)") == "What Is a Pension?"
+
+
+def test_story_worlds_rotate_and_only_use_drawable_props():
+    from agents.kids_scene_schema import PROPS
+    from agents.kids_script_agent import WORLDS, pick_world
+
+    for w in WORLDS:
+        assert w["place"] in PROPS and all(i.strip() in PROPS for i in w["items"].split(","))
+    hist, seen = [{"topic": "old video without a world"}], []
+    for i in range(6):
+        w = pick_world("finance" if i % 2 else "tech", hist)
+        seen.append(w["key"])
+        hist.append({"topic": f"t{i}", "world": w["key"]})
+    assert len(set(seen)) == 6 and "lemonade stand" not in seen
+    from agents.kids_script_agent import world_options
+    opts = [w["key"] for w in world_options("tech", hist)]
+    assert len(opts) == 4 and not set(opts) & set(seen[-4:])
+    assert all("tech" in w["areas"] for w in world_options("tech", hist)[:2])
+
+
+def test_swap_stand_redraws_the_stall_but_keeps_text():
+    from agents.kids_script_agent import swap_stand
+
+    s = {"scenes": [{"type": "meet", "props": {"place": "stand", "label": "stand", "flow": "coin"}},
+                    {"type": "many", "props": {"items": [{"prop": "stand", "label": "X"}, {"prop": "shop"}]}}]}
+    assert swap_stand(s, "house") == 2
+    assert s["scenes"][0]["props"] == {"place": "house", "label": "stand", "flow": "coin"}
+    assert s["scenes"][1]["props"]["items"][0]["prop"] == "house"
+    assert swap_stand(s, "stand") == 0
+
+
+def test_short_has_no_title_card_and_ends_with_the_pointer():
+    from agents.kids_script_agent import SHORT_MAX_WORDS, SHORT_OUTRO, _words, finish_short, short_cut
+
+    line = {"text": "one two three four five six seven eight nine ten"}
+    scenes = [{"type": "title", "props": {}, "lines": [line]}] + \
+             [{"type": "talk", "props": {}, "lines": [line, line]} for _ in range(9)] + \
+             [{"type": "outro", "props": {}, "lines": [line]}]
+    s = finish_short(scenes)
+    assert s[0]["type"] != "title" and s[-1]["type"] == "outro" and s[-1]["lines"][0]["text"] == SHORT_OUTRO
+    assert _words(s) <= SHORT_MAX_WORDS and sum(sc["type"] == "outro" for sc in s) == 1
+    cut = short_cut({"scenes": scenes})
+    assert cut[0]["type"] == "talk" and 40 <= _words(cut) <= SHORT_MAX_WORDS
+
+
+def test_short_opens_with_a_question_and_filler_is_stripped():
+    from agents.kids_script_agent import finish_short, strip_filler
+
+    body = [{"type": "meet", "props": {}, "lines": [{"text": "Look inside a tiny toy shop."}]}]
+    s = finish_short(body, hook="How do computer chips work?")
+    assert s[0]["lines"][0]["text"] == "How do computer chips work?" and s[1]["type"] == "meet"
+    asked = [{"type": "talk", "props": {}, "lines": [{"text": "How can a tiny chip think so fast?"}]}]
+    assert finish_short(asked, hook="How do computer chips work?")[0] is asked[0]
+    sc = {"scenes": [{"lines": [{"text": "Leo walks in and says hi cheerfully."},
+                                {"text": "Tiny switches flip quickly.", "cue": "quickly"},
+                                {"text": "Each tiny switch says yes or no quickly!"}]}]}
+    assert strip_filler(sc) == 2
+    assert [ln["text"] for ln in sc["scenes"][0]["lines"]] == [
+        "Leo walks in and says hi.", "Tiny switches flip quickly.", "Each tiny switch says yes or no!"]
+
+
+def test_opening_must_start_the_story_not_greet():
+    from agents.kids_script_agent import drop_greetings, opening_problems
+
+    def scenes(*title_and_meet):
+        t, m = title_and_meet
+        return [{"type": "title", "lines": [{"text": x} for x in t]}, {"type": "meet", "lines": [{"text": x} for x in m]}]
+
+    bad = scenes(["Why does gasoline cost so much?", "Mia waves hello to curious friends."],
+                 ["Hi! I'm Mia, the baker.", "My bakery smells sweet like sunrise."])
+    problems = opening_problems(bad)
+    assert any("waves" in p for p in problems) and any("you" in p for p in problems)
+    assert drop_greetings(bad) == 2                      # the title keeps its question, the meet scene one line
+    assert [ln["text"] for ln in bad[0]["lines"]] == ["Why does gasoline cost so much?"]
+    assert [ln["text"] for ln in bad[1]["lines"]] == ["My bakery smells sweet like sunrise."]
+
+    good = scenes(["Why does gasoline cost so much?", "Mia's cookies cost more today. You will see why."],
+                  ["The flour truck came late this morning.", "Now Mia has only one bag of flour."])
+    assert opening_problems(good) == [] and drop_greetings(good) == 0
+    assert opening_problems(scenes(["Gasoline costs a lot."], ["You will see why."]))[0].startswith("the first line")
+
+
+def test_title_fits_search_and_thumbnail_does_not_repeat_it():
+    from agents.kids_agent import description_for
+    from agents.kids_script_agent import QUESTION_MAX, TITLE_SUFFIX
+    from agents.packaging import TITLE_MAX, packaging_problems, short_thumb
+
+    assert QUESTION_MAX + len(TITLE_SUFFIX) == TITLE_MAX == 60
+    title = "How do drones see hidden forest fires? (Explained Like You're 5)"
+    bad = packaging_problems(title, "How do drones see hidden forest fires?")
+    assert len(bad) == 3                                   # too long, too many words, repeats the title
+    assert packaging_problems("How do drones find fires? (Explained Like You're 5)", "IT SEES HEAT") == []
+    assert short_thumb("How do drones see hidden forest fires?") == "drones see hidden?"
+    d = description_for({"title": "How do drones find fires? (Explained Like You're 5)", "description": "Tiny robots feel heat."})
+    assert d.startswith("How do drones find fires? Tiny robots feel heat.")
+
+
+def test_llm_skips_a_key_without_credit_and_waits_out_the_minute_budget(monkeypatch):
+    from agents import llm as L
+
+    calls, slept = [], []
+    monkeypatch.setattr(L.time, "sleep", slept.append)
+
+    def dead(model, *a):
+        calls.append("dead")
+        raise RuntimeError("402 RESOURCE_EXHAUSTED. Your prepayment credits are depleted.")
+
+    def busy(model, *a):
+        calls.append("busy")
+        if calls.count("busy") == 1:
+            raise RuntimeError("Error code: 413 - Request too large for model on tokens per minute (TPM): Limit 8000, Requested 9000")
+        return '{"ok": true}'
+
+    f = L.FreeLLM()
+    monkeypatch.setattr(f, "chain", lambda: [("gemini", "g", dead), ("groq", "q", busy)])
+    assert f.complete("s", "u") == '{"ok": true}' and slept == [62]
+    f._preferred = None
+    assert f.complete("s", "u") == '{"ok": true}'
+    assert calls.count("dead") == 1                      # the dead key is not asked again
+
+
+def test_ai_topics_get_tech_worlds_first():
+    from agents.kids_script_agent import world_options
+    opts = world_options("ai", history=[], n=3)
+    assert all("tech" in w["areas"] for w in opts)
+
+
+def test_near_duplicate_kids_topics_are_caught():
+    from agents.kids_topic_agent import too_close
+    past = ["How does AI learn?", "Why do we pay taxes?", "Why does AI need rules?"]
+    assert too_close("How does AI learn to work?", past)
+    assert too_close("How does a computer learn?", past)
+    assert too_close("Why do we pay so many taxes?", past)
+    assert not too_close("How do computers solve mysteries?", past)
+    assert not too_close("What is a GPU?", past)
+    assert not too_close("Why do house prices change?", past)
+    assert not too_close("What is AI?", past) and not too_close("Why does AI need electricity?", past)
+    # everyday verbs carry no meaning: these two are the same video (10-30 and 11-01)
+    assert too_close("How does AI change the ads we see?", ["How does AI pick ads?"])
+    assert not too_close("How does AI spot spam emails?", ["How does AI pick ads?"])
+    # one specific subject word is the same video however it is dressed (11-09 repeated "What is a Chip?")
+    assert too_close("What is a computer chip?", ["What is a Chip?"])
+    assert too_close("What is a Chip?", ["How do computer chips think?".replace("chips", "chip")])
+    assert not too_close("What is a neural network?", ["What is AI?", "How does a computer learn?"])
+
+
+def test_short_hook_must_name_the_real_subject():
+    from agents.kids_script_agent import names_subject
+    assert not names_subject("Why do rockets pick my favorite star?", "How does AI change the ads we see?")
+    assert not names_subject("How does a truck see without eyes?", "How do driverless cars see?")
+    assert names_subject("Why do ads know what you like?", "How does AI change the ads we see?")
+    assert names_subject("Can a driverless car really see?", "How do driverless cars see?")
+
+
+def test_kids_steps_use_claude_and_fall_back_to_free_models(monkeypatch):
+    from unittest import mock
+    from agents import claude_writer as C
+    from agents.kids_script_agent import KidsScriptAgent
+    from config import config
+    monkeypatch.setattr(C, "available", lambda: True)
+    monkeypatch.setattr(config, "CLAUDE_KIDS", True)
+    free = mock.Mock(last_model="groq:x")
+    free.complete.return_value = '{"ok": 2}'
+    agent = KidsScriptAgent(llm=free)
+    monkeypatch.setattr(C, "ask", mock.Mock(return_value='{"ok": 1}'))
+    assert agent._ask("p", lambda o: None) == {"ok": 1} and agent.writer.startswith("claude:")
+    assert not free.complete.called
+    monkeypatch.setattr(C, "ask", mock.Mock(side_effect=RuntimeError("limit reached")))
+    assert agent._ask("p", lambda o: None) == {"ok": 2} and agent.writer == "groq:x"
+    assert agent.use_claude is False                        # the rest of this video stays on the free models
+    monkeypatch.setattr(config, "CLAUDE_KIDS", False)
+    assert KidsScriptAgent(llm=free).use_claude is False
+
+
+def test_topics_already_on_the_channel_are_skipped(monkeypatch):
+    from unittest import mock
+    from agents import published
+    from agents.kids_topic_agent import KidsTopicAgent
+    from agents.published import explainer_published, kids_questions
+    titles = ["What are data centers? (Explained Like You're 5)", "How does AI learn? | Explained Like You're 5 #Shorts",
+              "Run a ChatGPT-like AI Locally with Open WebUI – Free & Offline", "Run Gemma 4 Locally with Ollama"]
+    assert kids_questions(titles) == ["How does AI learn?", "What are data centers?"]
+    assert explainer_published("Open WebUI with Ollama: a private ChatGPT on your own PC", titles)
+    assert explainer_published("Gemma 4: run Google's open model on your own computer with Ollama", titles)
+    assert not explainer_published("ik_llama.cpp: run bigger models faster", titles)
+    assert not explainer_published("How Stable Diffusion turns a text prompt into an AI image", titles)
+    monkeypatch.setattr(published, "channel_titles", lambda: titles)
+    agent = KidsTopicAgent(llm=mock.Mock())
+    monkeypatch.setattr(agent, "history", lambda: [])
+    monkeypatch.setattr(agent, "bank", lambda: [{"question": "What is a data center?", "area": "tech"},
+                                               {"question": "What is a password?", "area": "tech"}])
+    assert [t["topic"] for t in agent.get_topics(1, mode="bank")] == ["What is a password?"]

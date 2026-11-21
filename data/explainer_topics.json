@@ -1,0 +1,491 @@
+{
+ "_note": "Evergreen explainer topics: one free / open-source AI tool each. 'repo' is the GitHub project and its README is the source text the script is grounded in; topics without a repo use 'url' (a page whose text is the source). Add freely; used ones are skipped via data/topics_history.json. Order matters: the next unused topic is picked from the top, so tools people search for most go first. Tool topics (repo) and how-it-works topics (kind: concept, url + source_url) alternate.",
+ "topics": [
+  {
+   "topic": "Ollama on Windows: install it and run your first local AI model",
+   "repo": "ollama/ollama",
+   "branch": "main"
+  },
+  {
+   "topic": "n8n: build AI automations yourself with an open-source workflow tool",
+   "repo": "n8n-io/n8n",
+   "branch": "master"
+  },
+  {
+   "topic": "Best local AI model for your graphics card: 8, 16 or 24 GB",
+   "url": "https://dreaming.press/posts/open-weight-llms-you-actually-run-locally-october-2026.html"
+  },
+  {
+   "topic": "ComfyUI on a low-VRAM GPU: make AI images with 6 to 8 GB",
+   "repo": "comfyanonymous/ComfyUI",
+   "branch": "master"
+  },
+  {
+   "topic": "gpt-oss: run OpenAI's open-weight model on your own PC",
+   "url": "https://ollama.com/library/gpt-oss"
+  },
+  {
+   "topic": "Ollama explained: run AI models on your own computer for free",
+   "repo": "ollama/ollama",
+   "branch": "main"
+  },
+  {
+   "topic": "Open WebUI: a free ChatGPT-style interface for your own local AI",
+   "repo": "open-webui/open-webui",
+   "branch": "main"
+  },
+  {
+   "topic": "llama.cpp explained: the engine behind most local AI apps",
+   "repo": "ggml-org/llama.cpp",
+   "branch": "master"
+  },
+  {
+   "topic": "Whisper: free speech-to-text you can run on your own computer",
+   "repo": "openai/whisper",
+   "branch": "main"
+  },
+  {
+   "topic": "ComfyUI explained: make AI images locally with a node graph",
+   "repo": "comfyanonymous/ComfyUI",
+   "branch": "master"
+  },
+  {
+   "topic": "AnythingLLM: chat with your own documents using a private local AI",
+   "repo": "Mintplex-Labs/anything-llm",
+   "branch": "master"
+  },
+  {
+   "topic": "Jan: an open-source ChatGPT alternative that runs fully offline",
+   "repo": "janhq/jan",
+   "branch": "main"
+  },
+  {
+   "topic": "GPT4All: run a private AI chatbot on an ordinary laptop",
+   "repo": "nomic-ai/gpt4all",
+   "branch": "main"
+  },
+  {
+   "topic": "Wan2GP: free AI video generation on a low-VRAM graphics card",
+   "repo": "deepbeepmeep/Wan2GP",
+   "branch": "main"
+  },
+  {
+   "topic": "Aider: free AI pair programming in your terminal",
+   "repo": "Aider-AI/aider",
+   "branch": "main"
+  },
+  {
+   "topic": "LocalAI: a free, self-hosted replacement for the OpenAI API",
+   "repo": "mudler/LocalAI",
+   "branch": "master"
+  },
+  {
+   "topic": "Kokoro: a tiny open-source AI voice model that sounds human",
+   "repo": "hexgrad/kokoro",
+   "branch": "main"
+  },
+  {
+   "topic": "whisper.cpp: fast offline transcription on any computer",
+   "repo": "ggml-org/whisper.cpp",
+   "branch": "master"
+  },
+  {
+   "topic": "Text Generation WebUI: the all-in-one app for running local AI language models",
+   "repo": "oobabooga/text-generation-webui",
+   "branch": "main"
+  },
+  {
+   "topic": "Stable Diffusion WebUI: generate AI images on your own PC",
+   "repo": "AUTOMATIC1111/stable-diffusion-webui",
+   "branch": "master"
+  },
+  {
+   "topic": "Mixture of Experts explained: why some huge AI models run fast",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/moe",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/moe.md"
+  },
+  {
+   "topic": "Gemma 4: run Google's open model on your own computer with Ollama",
+   "url": "https://ollama.com/library/gemma4"
+  },
+  {
+   "topic": "How AI picks its next word: greedy, beam search and sampling",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/how-to-generate",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/how-to-generate.md"
+  },
+  {
+   "topic": "Open WebUI with Ollama: a private ChatGPT on your own PC",
+   "repo": "open-webui/open-webui",
+   "branch": "main"
+  },
+  {
+   "topic": "Quantization explained: how a big AI model fits on a small graphics card",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/4bit-transformers-bitsandbytes",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/4bit-transformers-bitsandbytes.md"
+  },
+  {
+   "topic": "Qwen 3.6: run Alibaba's open model locally with Ollama",
+   "url": "https://ollama.com/library/qwen3.6"
+  },
+  {
+   "topic": "RLHF explained: how AI chatbots learned to give helpful answers",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/rlhf",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/rlhf.md"
+  },
+  {
+   "topic": "PrivateGPT: ask an AI about your files without sending them anywhere",
+   "repo": "zylon-ai/private-gpt",
+   "branch": "main"
+  },
+  {
+   "topic": "Why Llama 3.1 405B needs a data center: the memory math of giant models",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/llama31",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/llama31.md"
+  },
+  {
+   "topic": "Unsloth: fine-tune your own AI model for free",
+   "repo": "unslothai/unsloth",
+   "branch": "main"
+  },
+  {
+   "topic": "Embeddings explained: how AI turns words into numbers it can search",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/getting-started-with-embeddings",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/getting-started-with-embeddings.md"
+  },
+  {
+   "topic": "faster-whisper: transcribe audio up to four times faster for free",
+   "repo": "SYSTRAN/faster-whisper",
+   "branch": "master"
+  },
+  {
+   "topic": "How text-to-video AI works, and why it needs so much computing power",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/text-to-video",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/text-to-video.md"
+  },
+  {
+   "topic": "Continue: an open-source AI coding assistant for your editor",
+   "repo": "continuedev/continue",
+   "branch": "main"
+  },
+  {
+   "topic": "Vision language models explained: how AI understands pictures",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/vlms",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/vlms.md"
+  },
+  {
+   "topic": "LibreChat: a free ChatGPT-style app you host yourself",
+   "repo": "danny-avila/LibreChat",
+   "branch": "main"
+  },
+  {
+   "topic": "Speculative decoding: how a small AI model makes a big one answer faster",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/assisted-generation",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/assisted-generation.md"
+  },
+  {
+   "topic": "Tabby: a self-hosted AI coding assistant, an open alternative to Copilot",
+   "repo": "TabbyML/tabby",
+   "branch": "main"
+  },
+  {
+   "topic": "How reasoning models like DeepSeek-R1 are trained, and the open copy Open-R1",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/open-r1",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/open-r1.md"
+  },
+  {
+   "topic": "Perplexica: an open-source AI search engine you host yourself",
+   "repo": "ItzCrazyKns/Perplexica",
+   "branch": "master"
+  },
+  {
+   "topic": "AI agents explained: models that write code to get things done",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/smolagents",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/smolagents.md"
+  },
+  {
+   "topic": "Strata: run a 125-billion-parameter AI model on a 12 GB graphics card",
+   "repo": "Niko1221/Strata",
+   "branch": "main"
+  },
+  {
+   "topic": "Diffusion models explained: how AI draws a picture out of noise",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/annotated-diffusion",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/annotated-diffusion.md"
+  },
+  {
+   "topic": "WhisperX: free transcripts with word timestamps and who is speaking",
+   "repo": "m-bain/whisperX",
+   "branch": "main"
+  },
+  {
+   "topic": "KV cache explained: why long AI chats eat so much memory",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/kv-cache-quantization",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/kv-cache-quantization.md"
+  },
+  {
+   "topic": "Local Deep Research: a private AI research assistant on your own PC",
+   "repo": "LearningCircuit/local-deep-research",
+   "branch": "main"
+  },
+  {
+   "topic": "LoRA explained: how to teach an AI model new tricks cheaply",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/lora",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/lora.md"
+  },
+  {
+   "topic": "OpenCode: a free AI coding agent that works with local models",
+   "repo": "sst/opencode",
+   "branch": "dev"
+  },
+  {
+   "topic": "Small AI models explained: how SmolLM fits on a phone or laptop",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/smollm",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/smollm.md"
+  },
+  {
+   "topic": "ik_llama.cpp: run bigger models faster by splitting them across CPU and GPU",
+   "repo": "ikawrakow/ik_llama.cpp",
+   "branch": "main"
+  },
+  {
+   "topic": "ggml explained: the small library that runs AI on ordinary computers",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/introduction-to-ggml",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/introduction-to-ggml.md"
+  },
+  {
+   "topic": "nanobot: a tiny self-hosted AI agent for your own tools",
+   "repo": "HKUDS/nanobot",
+   "branch": "main"
+  },
+  {
+   "topic": "AI benchmarks explained: why the same AI model gets different scores",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/open-llm-leaderboard-mmlu",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/open-llm-leaderboard-mmlu.md"
+  },
+  {
+   "topic": "Vibe: free offline AI transcription for audio and video",
+   "repo": "thewh1teagle/vibe",
+   "branch": "main"
+  },
+  {
+   "topic": "Synthetic data explained: when AI learns from data made by AI",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/synthetic-data-save-costs",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/synthetic-data-save-costs.md"
+  },
+  {
+   "topic": "Docling: turn PDFs and documents into data an AI can read",
+   "repo": "docling-project/docling",
+   "branch": "main"
+  },
+  {
+   "topic": "Constitutional AI explained: teaching an AI model rules instead of examples",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/constitutional_ai",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/constitutional_ai.md"
+  },
+  {
+   "topic": "MarkItDown: convert any file to Markdown for AI tools",
+   "repo": "microsoft/markitdown",
+   "branch": "main"
+  },
+  {
+   "topic": "DPO explained: a simpler way to train AI on what people prefer",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/pref-tuning",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/pref-tuning.md"
+  },
+  {
+   "topic": "InvokeAI: a free creative studio for AI images on your own machine",
+   "repo": "invoke-ai/InvokeAI",
+   "branch": "main"
+  },
+  {
+   "topic": "8-bit AI explained: how fewer bits keep almost the same answers",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/hf-bitsandbytes-integration",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/hf-bitsandbytes-integration.md"
+  },
+  {
+   "topic": "LiteLLM: one interface for every AI model, local or cloud",
+   "repo": "BerriAI/litellm",
+   "branch": "main"
+  },
+  {
+   "topic": "How to pick an AI embedding model: what the MTEB leaderboard measures",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/mteb",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/mteb.md"
+  },
+  {
+   "topic": "vLLM explained: how to serve an open AI model fast",
+   "repo": "vllm-project/vllm",
+   "branch": "main"
+  },
+  {
+   "topic": "Few-shot learning explained: teaching AI with a handful of examples",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/setfit",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/setfit.md"
+  },
+  {
+   "topic": "MLX: run AI models natively on Apple silicon Macs",
+   "repo": "ml-explore/mlx",
+   "branch": "main"
+  },
+  {
+   "topic": "How Stable Diffusion turns a text prompt into an AI image",
+   "kind": "concept",
+   "url": "https://huggingface.co/blog/stable_diffusion",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/stable_diffusion.md"
+  },
+  {
+   "topic": "llamafile: a whole AI model in one file that runs anywhere",
+   "repo": "Mozilla-Ocho/llamafile",
+   "branch": "main"
+  },
+  {
+   "topic": "Open Interpreter: let a local AI run code on your computer",
+   "repo": "OpenInterpreter/open-interpreter",
+   "branch": "main"
+  },
+  {
+   "topic": "OpenHands: an open-source AI software engineer you can run yourself",
+   "repo": "All-Hands-AI/OpenHands",
+   "branch": "main"
+  },
+  {
+   "topic": "Dify: build AI apps and agents without code, self-hosted",
+   "repo": "langgenius/dify",
+   "branch": "main"
+  },
+  {
+   "topic": "Flowise: drag-and-drop AI agents you host yourself",
+   "repo": "FlowiseAI/Flowise",
+   "branch": "main"
+  },
+  {
+   "topic": "Chroma: the open-source database that gives AI a memory",
+   "repo": "chroma-core/chroma",
+   "branch": "main"
+  },
+  {
+   "topic": "Qdrant explained: what a vector database does for AI search",
+   "repo": "qdrant/qdrant",
+   "branch": "main"
+  },
+  {
+   "topic": "Crawl4AI: turn any website into clean data for your AI",
+   "repo": "unclecode/crawl4ai",
+   "branch": "main"
+  },
+  {
+   "topic": "exo: combine your everyday devices into one AI cluster",
+   "repo": "exo-explore/exo",
+   "branch": "main"
+  },
+  {
+   "topic": "Hugging Face Transformers: the library behind open AI models",
+   "repo": "huggingface/transformers",
+   "branch": "main"
+  },
+  {
+   "topic": "LobeChat: an open-source AI chat app for many models",
+   "repo": "lobehub/lobe-chat",
+   "branch": "main"
+  },
+  {
+   "topic": "Khoj: an open-source AI second brain for your notes",
+   "repo": "khoj-ai/khoj",
+   "branch": "master"
+  },
+  {
+   "topic": "RAGFlow: answer questions from your documents with open-source RAG",
+   "repo": "infiniflow/ragflow",
+   "branch": "main"
+  },
+  {
+   "topic": "Browser Use: let a local AI agent click through websites for you",
+   "repo": "browser-use/browser-use",
+   "branch": "main"
+  },
+  {
+   "topic": "Chat templates explained: why the same AI model answers worse in the wrong app",
+   "url": "https://huggingface.co/blog/chat-templates",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/chat-templates.md",
+   "kind": "concept"
+  },
+  {
+   "topic": "BitNet: run a 1-bit AI model on your CPU, no GPU needed",
+   "repo": "microsoft/BitNet",
+   "branch": "main"
+  },
+  {
+   "topic": "How AI image generators went from 50 steps to 4",
+   "url": "https://huggingface.co/blog/lcm_lora",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/lcm_lora.md",
+   "kind": "concept"
+  },
+  {
+   "topic": "WebLLM: run an AI chatbot inside your web browser, no install",
+   "repo": "mlc-ai/web-llm",
+   "branch": "main"
+  },
+  {
+   "topic": "ControlNet explained: how AI image tools follow your sketch",
+   "url": "https://huggingface.co/blog/controlnet",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/controlnet.md",
+   "kind": "concept"
+  },
+  {
+   "topic": "LLaMA-Factory: fine-tune your own AI model on one GPU",
+   "repo": "hiyouga/LLaMA-Factory",
+   "branch": "main"
+  },
+  {
+   "topic": "Why AI models keep getting bigger, and what it costs",
+   "url": "https://huggingface.co/blog/large-language-models",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/large-language-models.md",
+   "kind": "concept"
+  },
+  {
+   "topic": "Fish Speech: clone a voice with free local AI",
+   "repo": "fishaudio/fish-speech",
+   "branch": "main"
+  },
+  {
+   "topic": "Binary embeddings explained: how AI search gets 32 times cheaper",
+   "url": "https://huggingface.co/blog/embedding-quantization",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/embedding-quantization.md",
+   "kind": "concept"
+  },
+  {
+   "topic": "Piper: fast offline AI text-to-speech for any PC",
+   "repo": "OHF-Voice/piper1-gpl",
+   "branch": "main"
+  },
+  {
+   "topic": "How AI chatbots answer fast: the memory tricks behind them",
+   "url": "https://huggingface.co/blog/optimize-llm",
+   "source_url": "https://raw.githubusercontent.com/huggingface/blog/main/optimize-llm.md",
+   "kind": "concept"
+  }
+ ]
+}

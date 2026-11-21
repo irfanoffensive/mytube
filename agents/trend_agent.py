@@ -1,0 +1,222 @@
+"""
+Daily trend check for the explainer: the newest open AI model people are excited about right now.
+
+Videos that break out in this niche name something released days ago ("Run X Locally", "Can you
+run X at home?"), so before falling back to the evergreen topic bank, each run looks at Hugging
+Face's trending models (free, no key) and takes the strongest one that is:
+  - an original release (not a quantized / uncensored / GGUF copy made by someone else),
+  - at most TREND_MAX_AGE_DAYS old,
+  - liked by at least TREND_MIN_LIKES people,
+  - not covered before (its family name is not in the explainer history),
+  - not the same kind of model (OCR, voice, coding...) as a trend from the last TREND_THEME_DAYS.
+Well-known labs rank first: their names are what people search for.
+The model card is the source text the script is checked against.
+"""
+
+import logging
+import re
+from datetime import datetime, timezone
+from typing import Dict, List, Optional
+
+import requests
+
+from config import config
+
+logger = logging.getLogger(__name__)
+
+HF_TRENDING = ("https://huggingface.co/api/models?sort=trendingScore&limit=60"
+               "&expand[]=createdAt&expand[]=likes&expand[]=trendingScore&expand[]=pipeline_tag&expand[]=cardData"
+               "&expand[]=safetensors")
+
+# Labs whose names people search for. Unknown authors still count, ranked lower.
+KNOWN_LABS = {
+    "deepseek-ai", "qwen", "meta-llama", "google", "mistralai", "microsoft", "nvidia", "openai",
+    "black-forest-labs", "lightricks", "stabilityai", "liquidai", "baidu", "tencent", "minimaxai",
+    "moonshotai", "zai-org", "thudm", "ibm-granite", "apple", "allenai", "huggingfacetb", "opengvlab",
+    "bytedance", "bytedance-seed", "wan-ai", "openbmb", "fishaudio", "hexgrad", "xai-org", "ai21labs",
+    "cohereforai", "coherelabs", "facebook", "amazon", "salesforce", "internlm", "stepfun-ai", "kwai-kolors",
+}
+COPY_WORDS = re.compile(r"gguf|awq|gptq|exl2|mlx|abliterat|uncensored|quantized|heretic|-int4|-int8|-nf4", re.I)
+
+WHAT = {
+    "text-generation": "AI language model",
+    "image-text-to-text": "AI model that reads images and text",
+    "text-to-image": "AI image generator",
+    "image-to-image": "AI image editor",
+    "image-to-video": "AI video generator",
+    "text-to-video": "AI video generator",
+    "text-to-speech": "AI voice model",
+    "automatic-speech-recognition": "speech-to-text model",
+    "translation": "AI translation model",
+    "any-to-any": "AI model for text, images and audio",
+    "feature-extraction": "AI embedding model",
+    "mask-generation": "AI image cut-out model",
+}
+
+
+# Kinds of model, first match wins: the model's name, then its Hugging Face task.
+THEMES = (
+    ("ocr", r"ocr|document|scan"),
+    ("omni", r"omni|any-to-any"),
+    ("coding", r"(^|[^a-z])cod(er|e|ing)\b"),
+    ("voice", r"tts|speech|voice|audio|whisper|text-to-speech|automatic-speech-recognition"),
+    ("video", r"video|text-to-video|image-to-video"),
+    ("image", r"diffusion|flux|text-to-image|image-to-image"),
+    ("embedding", r"embed|rerank|feature-extraction"),
+    ("vision", r"\bvl\b|-vl|vision|image-text-to-text|images and text"),
+)
+
+
+def theme(text: str) -> str:
+    """'baidu/Unlimited-OCR-2 image-text-to-text' → 'ocr'; plain language models → 'language'."""
+    t = text.lower()
+    for name, pat in THEMES:
+        if re.search(pat, t):
+            return name
+    return "language"
+
+
+def model_theme(m: Dict) -> str:
+    return theme(f"{m.get('id', '')} {m.get('pipeline_tag', '')}")
+
+
+def recent_themes(history: List[Dict], now: Optional[datetime] = None) -> set:
+    """Kinds of model covered by trend videos in the last TREND_THEME_DAYS days."""
+    now = now or datetime.now(timezone.utc)
+    out = set()
+    for h in history:
+        if h.get("source") != "trend":
+            continue
+        try:
+            when = datetime.fromisoformat(str(h.get("used_at") or h.get("timestamp")))
+        except ValueError:
+            continue
+        if when.tzinfo is None:
+            when = when.replace(tzinfo=timezone.utc)
+        if (now - when).total_seconds() / 86400 <= config.TREND_THEME_DAYS:
+            out.add(h.get("theme") or theme(str(h.get("topic", "")).split(":")[0] + " " + str(h.get("topic", ""))))
+    return out
+
+
+def family(model_id: str) -> str:
+    """'deepseek-ai/DeepSeek-V4.1-Flash-1017' → 'deepseek v41 flash': the name without author,
+    date stamps or size suffixes, so a re-release of the same model is not covered twice."""
+    name = model_id.split("/")[-1].lower()
+    name = re.sub(r"[-_.]?(\d{4}|\d{6,8})$", "", name)            # date stamps like -1017
+    name = re.sub(r"[-_](base|instruct|chat|it|hf|diffusers|comfy)$", "", name)
+    return re.sub(r"[^a-z0-9]+", " ", name.replace(".", "")).strip()
+
+
+def is_original(m: Dict) -> bool:
+    """Released by its own lab, not a copy of someone else's model."""
+    if COPY_WORDS.search(m.get("id", "")):
+        return False
+    author = m.get("id", "").split("/")[0].lower()
+    base = (m.get("cardData") or {}).get("base_model")
+    bases = base if isinstance(base, list) else [base] if base else []
+    return all(str(b).split("/")[0].lower() == author for b in bases)
+
+
+def age_days(m: Dict, now: Optional[datetime] = None) -> float:
+    try:
+        made = datetime.fromisoformat(str(m["createdAt"]).replace("Z", "+00:00"))
+    except (KeyError, ValueError):
+        return 1e9
+    return ((now or datetime.now(timezone.utc)) - made).total_seconds() / 86400
+
+
+def covered(model_id: str, history: List[Dict]) -> bool:
+    fam = family(model_id)
+    if not fam:
+        return True
+    from agents.published import alnum, channel_titles
+    if any(alnum(fam) in alnum(t) for t in channel_titles()):
+        return True
+    for h in history:
+        text = re.sub(r"[^a-z0-9]+", " ", str(h.get("topic", "")).lower().replace(".", ""))
+        if f" {fam} " in f" {text} ":
+            return True
+    return False
+
+
+def params_b(m: Dict) -> Optional[float]:
+    """Total parameters in billions from the model's weight files, or None when Hugging Face does not say."""
+    total = (m.get("safetensors") or {}).get("total")
+    return round(int(total) / 1e9, 1) if total else None
+
+
+def runs_at_home(m: Dict) -> bool:
+    """Not a giant beyond TREND_MAX_PARAMS_B; unknown size passes. LongCat-2.5 (1.8 trillion parameters)
+    got 19 views in two days, while DeepSeek-V4.1-Flash (763 billion) did well on its famous name."""
+    p = params_b(m)
+    return p is None or p <= config.TREND_MAX_PARAMS_B
+
+
+def too_big(model_id: str) -> bool:
+    """A planned model over TREND_MAX_PARAMS_B (checked on the day; no answer → not too big)."""
+    try:
+        m = requests.get(f"https://huggingface.co/api/models/{model_id}", params={"expand[]": "safetensors"},
+                         timeout=20, headers={"User-Agent": "AutoTube/1.0"}).json()
+    except Exception:  # noqa: BLE001
+        return False
+    return not runs_at_home(m)
+
+
+def rank(models: List[Dict], history: List[Dict], now: Optional[datetime] = None) -> List[Dict]:
+    keep = [m for m in models
+            if is_original(m) and m.get("pipeline_tag") in WHAT
+            and age_days(m, now) <= config.TREND_MAX_AGE_DAYS
+            and int(m.get("likes") or 0) >= config.TREND_MIN_LIKES
+            and not covered(m["id"], history)
+            and runs_at_home(m)]
+    done = recent_themes(history, now)
+    if done:
+        keep = [m for m in keep if model_theme(m) not in done]
+    known = lambda m: m["id"].split("/")[0].lower() in KNOWN_LABS
+    return sorted(keep, key=lambda m: (not known(m), -float(m.get("trendingScore") or 0)))
+
+
+def display_name(model_id: str) -> str:
+    """'deepseek-ai/DeepSeek-V4.1-Flash-1017' → 'DeepSeek-V4.1-Flash' (date stamps read as noise in a title)."""
+    return re.sub(r"[-_.]?(\d{4}|\d{6,8})$", "", model_id.split("/")[-1]) or model_id.split("/")[-1]
+
+
+def to_topic(m: Dict) -> Dict:
+    name = display_name(m["id"])
+    what = WHAT.get(m.get("pipeline_tag", ""), "AI model")
+    return {
+        "topic": f"{name}: the new {what} from {m['id'].split('/')[0]}, and can you run it at home?",
+        "kind": "trend",
+        "source": "trend",
+        "theme": model_theme(m),
+        "summary": f"Trending on Hugging Face now ({m.get('likes')} likes, released {str(m.get('createdAt'))[:10]}).",
+        "url": f"https://huggingface.co/{m['id']}",
+        "source_url": f"https://huggingface.co/{m['id']}/raw/main/README.md",
+    }
+
+
+def is_big(m: Dict) -> bool:
+    """A release from a lab people search for, liked by at least TREND_BIG_LIKES."""
+    return m["id"].split("/")[0].lower() in KNOWN_LABS and int(m.get("likes") or 0) >= config.TREND_BIG_LIKES
+
+
+def trending_topic(history: List[Dict], big_only: bool = False) -> Optional[Dict]:
+    """Today's trend topic, or None (feed down, or nothing new and strong enough).
+    `big_only`: the day after a trend video, only a big release is worth another one."""
+    try:
+        r = requests.get(HF_TRENDING, timeout=20, headers={"User-Agent": "AutoTube/1.0"})
+        r.raise_for_status()
+        models = r.json()
+    except Exception as e:  # noqa: BLE001 — the topic bank is the fallback
+        logger.warning(f"[trends] Hugging Face trending unavailable: {str(e)[:120]}")
+        return None
+    ranked = rank(models, history)
+    if big_only:
+        ranked = [m for m in ranked if is_big(m)]
+    for m in ranked[:5]:
+        logger.info(f"[trends] candidate {m['id']} ({m.get('likes')} likes, {age_days(m):.0f} days old, {model_theme(m)})")
+    if not ranked:
+        logger.info("[trends] no big release today (yesterday was a trend) — using the topic bank" if big_only
+                    else "[trends] nothing new and strong enough today — using the topic bank")
+        return None
+    return to_topic(ranked[0])

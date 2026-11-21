@@ -1,0 +1,52 @@
+# Secrets — never commit these
+.env
+client_secrets.json
+data/youtube_token.json
+
+# Generated outputs (large files, rebuilt every run)
+outputs/
+logs/
+# embedding model download (agents/topic_index.py)
+.cache/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Jupyter
+.ipynb_checkpoints/
+# Added by code-review-graph
+.code-review-graph/
+
+
+# code related or repo related
+data/music/*
+
+# POC render outputs
+poc/ai_video/out/
+
+# Explainer renderer (Remotion)
+video/explainer/node_modules/
+video/explainer/test-output/
+video/explainer/out/

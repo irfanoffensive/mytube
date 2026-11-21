@@ -1,0 +1,441 @@
+[
+  {
+    "topic": "How does the stock market work?",
+    "area": "finance",
+    "source": "poc",
+    "date": "2026-09-28T00:00:00+00:00"
+  },
+  {
+    "topic": "What is a pension?",
+    "area": "finance",
+    "source": "feed",
+    "date": "2026-10-02T10:13:44+00:00"
+  },
+  {
+    "topic": "How does artificial intelligence learn?",
+    "area": "tech",
+    "source": "feed",
+    "date": "2026-10-03T09:36:16+00:00"
+  },
+  {
+    "topic": "Why do people save money for later?",
+    "area": "finance",
+    "source": "feed",
+    "date": "2026-10-04T10:21:45+00:00"
+  },
+  {
+    "topic": "How can computers help farmers grow crops?",
+    "area": "tech",
+    "source": "feed",
+    "date": "2026-10-05T05:50:06+00:00"
+  },
+  {
+    "topic": "Why does borrowing cost extra?",
+    "area": "finance",
+    "source": "feed",
+    "date": "2026-10-05T11:02:36+00:00"
+  },
+  {
+    "topic": "How does broadband bring video to our homes?",
+    "area": "tech",
+    "source": "feed",
+    "date": "2026-10-05T11:41:20+00:00"
+  },
+  {
+    "topic": "Why do companies set the same price?",
+    "area": "finance",
+    "source": "feed",
+    "date": "2026-10-07T10:47:03+00:00"
+  },
+  {
+    "topic": "What is a chip?",
+    "area": "tech",
+    "source": "feed",
+    "date": "2026-10-08T11:06:35+00:00"
+  },
+  {
+    "topic": "What is a data breach?",
+    "area": "tech",
+    "source": "feed",
+    "world": "robot workshop",
+    "date": "2026-10-08T13:53:43+00:00"
+  },
+  {
+    "topic": "What is a scam?",
+    "area": "finance",
+    "source": "feed",
+    "world": "toy shop",
+    "date": "2026-10-09T11:11:20+00:00"
+  },
+  {
+    "topic": "How do AI safety rules protect us?",
+    "area": "tech",
+    "source": "feed",
+    "world": "rocket club",
+    "date": "2026-10-10T10:21:14+00:00"
+  },
+  {
+    "topic": "Why does gasoline cost so much?",
+    "area": "finance",
+    "source": "feed",
+    "world": "cookie bakery",
+    "date": "2026-10-11T10:35:15+00:00"
+  },
+  {
+    "topic": "Why does AI need rules?",
+    "area": "tech",
+    "source": "feed",
+    "world": "delivery truck",
+    "date": "2026-10-12T11:43:34+00:00"
+  },
+  {
+    "topic": "Why do things cost more?",
+    "area": "finance",
+    "source": "feed",
+    "world": "pizza shop",
+    "date": "2026-10-13T11:19:26+00:00"
+  },
+  {
+    "topic": "Can robots apply for jobs?",
+    "area": "tech",
+    "source": "feed",
+    "world": "letters to grandma",
+    "date": "2026-10-14T09:11:15+00:00"
+  },
+  {
+    "topic": "What is inflation?",
+    "area": "finance",
+    "source": "feed",
+    "world": "apple tree",
+    "date": "2026-10-15T08:44:26+00:00"
+  },
+  {
+    "topic": "How does AI learn?",
+    "area": "tech",
+    "source": "feed",
+    "world": "robot workshop",
+    "date": "2026-10-16T08:37:16+00:00"
+  },
+  {
+    "topic": "Why do we pay taxes?",
+    "area": "finance",
+    "source": "feed",
+    "world": "piggy bank",
+    "date": "2026-10-17T08:10:45+00:00"
+  },
+  {
+    "topic": "What are data centers?",
+    "area": "tech",
+    "source": "feed",
+    "world": "book swap",
+    "date": "2026-10-18T08:28:45+00:00"
+  },
+  {
+    "topic": "Why do house prices change?",
+    "area": "finance",
+    "source": "feed",
+    "world": "toy shop",
+    "date": "2026-10-19T09:25:35+00:00"
+  },
+  {
+    "topic": "How does a computer learn?",
+    "area": "tech",
+    "source": "feed",
+    "world": "rocket club",
+    "date": "2026-10-20T09:01:29+00:00"
+  },
+  {
+    "topic": "How do computers solve mysteries?",
+    "area": "ai",
+    "source": "feed",
+    "world": "delivery truck",
+    "date": "2026-10-21T09:02:50+00:00"
+  },
+  {
+    "topic": "How does AI learn to work?",
+    "area": "ai",
+    "source": "feed",
+    "world": "cookie bakery",
+    "date": "2026-10-22T09:04:47+00:00"
+  },
+  {
+    "topic": "Can computers draw pictures?",
+    "area": "ai",
+    "source": "feed",
+    "world": "robot workshop",
+    "date": "2026-10-23T08:59:49+00:00"
+  },
+  {
+    "topic": "How can computers stop germs?",
+    "area": "ai",
+    "source": "feed",
+    "world": "apple tree",
+    "date": "2026-10-24T08:35:12+00:00"
+  },
+  {
+    "topic": "Why do computers need updates?",
+    "area": "tech",
+    "source": "feed",
+    "world": "rocket club",
+    "date": "2026-10-25T08:54:06+00:00"
+  },
+  {
+    "topic": "How can AI help stop disease?",
+    "area": "ai",
+    "source": "feed",
+    "world": "delivery truck",
+    "date": "2026-10-26T09:32:47+00:00"
+  },
+  {
+    "topic": "Why does AI need so much power?",
+    "area": "ai",
+    "source": "feed",
+    "world": "pizza shop",
+    "date": "2026-10-27T09:58:22+00:00"
+  },
+  {
+    "topic": "How does a chatbot talk?",
+    "area": "ai",
+    "source": "feed",
+    "world": "robot workshop",
+    "opening": "You will see a robot learn to speak.",
+    "ending": "Notice the parts that help you talk every day!",
+    "date": "2026-10-28T10:10:51+00:00"
+  },
+  {
+    "topic": "How does the internet work?",
+    "area": "tech",
+    "source": "bank",
+    "world": "letters to grandma",
+    "opening": "You will see a letter road deliver messages.",
+    "ending": "Notice the letters traveling in your own day!",
+    "date": "2026-10-29T10:33:24+00:00"
+  },
+  {
+    "topic": "How does AI pick ads?",
+    "area": "ai",
+    "source": "feed",
+    "world": "book swap",
+    "opening": "You’ll see why a robot chooses the right picture book.",
+    "ending": "Notice the robot helper picking the right book.",
+    "date": "2026-10-30T10:38:19+00:00"
+  },
+  {
+    "topic": "What is cryptocurrency?",
+    "area": "finance",
+    "source": "feed",
+    "world": "piggy bank",
+    "opening": "You will find a treasure inside a piggy bank.",
+    "ending": "That is why you keep your magic safe.",
+    "date": "2026-10-31T10:09:15+00:00"
+  },
+  {
+    "topic": "How does AI change the ads we see?",
+    "area": "ai",
+    "source": "feed",
+    "world": "rocket club",
+    "opening": "Rockets pick the perfect star for each house.",
+    "ending": "Enjoy the sparkle of smart choices!",
+    "date": "2026-11-01T10:58:53+00:00"
+  },
+  {
+    "topic": "How do video game remakes work?",
+    "area": "tech",
+    "source": "feed",
+    "world": "robot workshop",
+    "opening": "You will see a new robot that works better.",
+    "ending": "Upgrades can make old things feel brand new. Remake things happen all around us every day.",
+    "date": "2026-11-02T11:48:26+00:00"
+  },
+  {
+    "topic": "How do self‑driving cars see the road?",
+    "area": "ai",
+    "source": "feed",
+    "world": "delivery truck",
+    "opening": "You’ll learn how Leo’s truck looks ahead.",
+    "ending": "Notice how many things help you see!",
+    "date": "2026-11-03T11:30:55+00:00"
+  },
+  {
+    "topic": "How do companies share work?",
+    "area": "finance",
+    "source": "feed",
+    "world": "toy shop",
+    "opening": "By the end, you will know why Leo needs a friend.",
+    "ending": "Next time you buy a toy like Mia, think of two friends.",
+    "date": "2026-11-04T11:44:50+00:00"
+  },
+  {
+    "topic": "What is a cloud server?",
+    "area": "tech",
+    "source": "feed",
+    "world": "book swap",
+    "opening": "Leo's books won't fit, and you'll learn where Mia's books go.",
+    "ending": "Each saved picture takes a little walk to a faraway box.",
+    "date": "2026-11-05T11:42:23+00:00"
+  },
+  {
+    "topic": "What is an AI assistant?",
+    "area": "ai",
+    "source": "feed",
+    "world": "rocket club",
+    "opening": "Piece by piece, you get to build one with Leo's club.",
+    "ending": "Every helper guesses a little, so a quick check keeps rockets flying.",
+    "date": "2026-11-06T11:43:11+00:00"
+  },
+  {
+    "topic": "What is an interest rate?",
+    "area": "finance",
+    "source": "feed",
+    "world": "cookie bakery",
+    "opening": "One tiny extra coin changes Mia's whole bakery.",
+    "ending": "An interest rate is how much extra for every 10 you borrow. Now that thank-you has a name you know.",
+    "date": "2026-11-07T10:51:04+00:00"
+  },
+  {
+    "topic": "How do AI models get smarter?",
+    "area": "ai",
+    "source": "feed",
+    "world": "robot workshop",
+    "opening": "Zoe's robot calls every apple a cookie, and you can spot the fix.",
+    "ending": "Smart grows one tiny gear turn at a time.",
+    "date": "2026-11-08T10:56:29+00:00"
+  },
+  {
+    "topic": "What is a computer chip?",
+    "area": "tech",
+    "source": "feed",
+    "world": "delivery truck",
+    "opening": "You can help Leo solve a mystery that fits on a fingertip.",
+    "ending": "Yes or no, super fast, all inside one small chip.",
+    "date": "2026-11-09T12:20:10+00:00",
+    "story": "Leo's delivery truck and its tiny roads / computer chip = a tiny town of roads where little deliveries zoom; switch (transistor) = a little gate on the road that opens or shuts; on and off = gate open means yes, gate shut means no",
+    "shape": "mystery"
+  },
+  {
+    "topic": "What is a neural network?",
+    "area": "ai",
+    "source": "feed",
+    "world": "apple tree",
+    "opening": "By the end, you'll know why Mia's team of friends wins.",
+    "ending": "Every time you fix an oops, you learn like Mia's team.",
+    "date": "2026-11-10T11:56:13+00:00",
+    "story": "sorting apples from Zoe's apple tree / neuron = one friend who checks just one small thing about an apple, like its color or its spots; connection weights = how much each friend listens to the friend next to them; training = practicing on a hundred apples and fixing the listening after every mistake; neural network = the whole team of friends passing their guesses down the line",
+    "shape": "race"
+  },
+  {
+    "topic": "Why do prices jump up?",
+    "area": "finance",
+    "source": "feed",
+    "world": "lemonade stand",
+    "opening": "One cup used to cost one coin, and you can find out what changed.",
+    "ending": "Next time a price jumps, ask: costs or crowds?",
+    "date": "2026-11-11T11:36:57+00:00",
+    "story": "Mia's lemonade stand on a busy street / cost = the coins Mia pays for lemons, cups and jars; demand = a long line of kids with lots of coins, all wanting lemonade; inflation = when prices at every stand on the street go up together",
+    "shape": "build it"
+  },
+  {
+    "topic": "How can a busy shop still run out of money?",
+    "area": "finance",
+    "source": "plan",
+    "world": "pizza shop",
+    "opening": "Follow the coins with Mia, and you'll catch the sneaky leak.",
+    "ending": "It wins when more coins come in than go out.",
+    "date": "2026-11-12T12:02:58+00:00",
+    "story": "Mia's busy pizza shop / revenue = the coins that come in when friends buy slices; costs = the coins that go out for cheese, boxes and the shop itself; profit = the coins still left in the jar at the end of the day",
+    "shape": "what if"
+  },
+  {
+    "topic": "Can an AI get in trouble with the law?",
+    "area": "ai",
+    "source": "plan",
+    "world": "robot workshop",
+    "opening": "When a robot spills, who mops up? You're about to find out.",
+    "ending": "Behind every robot is a person who can fix it.",
+    "date": "2026-11-13T11:47:56+00:00",
+    "story": "Zoe's robot workshop / AI = Zoe's robot that follows the chip she put inside it; the law = the workshop rules about who fixes a mess; responsible = the people who built it, switched it on and let it roll",
+    "shape": "problem and fix"
+  },
+  {
+    "topic": "How can a game draw fewer dots but look sharper?",
+    "area": "tech",
+    "source": "plan",
+    "world": "rocket club",
+    "opening": "Leo's rocket game drew less but looks better, and you get to crack why.",
+    "ending": "A quick rough picture plus smart guesses makes a sharp sky.",
+    "date": "2026-11-14T11:08:16+00:00",
+    "story": "the kids' rocket club and its pretend space game / graphics chip = the tiny chip in the rocket that draws the space game; pixels = the little dots that make up every picture on the screen; low resolution = a quick rough picture made with fewer dots; AI upscaling = a smart helper in the chip that has seen lots and lots of pictures and guesses the missing dots",
+    "shape": "mystery"
+  },
+  {
+    "topic": "Why don't AI builders fully understand their AI?",
+    "area": "ai",
+    "source": "plan",
+    "world": "apple tree",
+    "opening": "Zoe built a robot, but even Zoe can't say how it thinks!",
+    "ending": "Builders grow AI, so they study it to understand it.",
+    "date": "2026-11-15T11:38:43+00:00",
+    "story": "picking apples from the apple tree in Zoe's garden / AI = Zoe's robot, whose brain grew like a little tree; training = giving the robot lots of practice, like water and sun for a seed; AI builders = Zoe, who helped the brain grow but never placed each branch; studying the AI = peeking at the branches afterward to see how it learned",
+    "shape": "race"
+  },
+  {
+    "topic": "What is a money bubble?",
+    "area": "finance",
+    "source": "plan",
+    "world": "toy shop",
+    "opening": "Here's how a 2-coin top ends up costing 10.",
+    "ending": "Hope can lift a price, but only worth holds it up.",
+    "shape": "build it",
+    "lead": "sam",
+    "story": "a spinning top for sale at Leo's toy shop / price = the coins someone pays Leo for the spinning top; real value = how much the top is worth just for spinning it, about 2 coins of fun; money bubble = when the top's price floats way above its fun, only because everyone hopes someone else will pay even more tomorrow; the bubble popping = the day nobody will pay more, so the price drops back to about ",
+    "date": "2026-11-16T12:15:05+00:00"
+  },
+  {
+    "topic": "When does an AI-edited photo become a fib?",
+    "area": "ai",
+    "source": "plan",
+    "world": "letters to grandma",
+    "opening": "Mia's letters to Grandma hold the answer.",
+    "ending": "Clearer is honest; better than real is a fib.",
+    "shape": "what if",
+    "lead": "ava",
+    "story": "Ava's photo letters to Grandma's house / AI photo editing = the smart helper on Ava's phone that can change her photos before she mails them to Grandma; touch-up = fixing the light or tidying the edges so Grandma sees Ava's real garden more clearly; fake (a fib) = adding a tree or a door that was never really there, so the photo tells Grandma something untrue; the honesty test = asking: if Grandma",
+    "date": "2026-11-17T12:39:00+00:00"
+  },
+  {
+    "topic": "Why can one computer problem stop the whole world?",
+    "area": "tech",
+    "source": "plan",
+    "world": "delivery truck",
+    "opening": "Raj’s truck carries the key that opens the city hub.",
+    "ending": "If a system depends on one piece, it can halt.",
+    "shape": "problem and fix",
+    "lead": "raj",
+    "story": "Leo's delivery truck / single point of failure = one broken truck that stops all deliveries; redundancy = extra backup truck / If a system depends on one piece, that piece failing can halt everything.",
+    "date": "2026-11-18T12:40:36+00:00"
+  },
+  {
+    "topic": "What does it mean when an economy grows?",
+    "area": "finance",
+    "source": "plan",
+    "world": "cookie bakery",
+    "opening": "Follow Kim's clues, and you'll finally get it when the news says it.",
+    "ending": "Not pricier ones, just more of them to share.",
+    "shape": "mystery",
+    "lead": "kim",
+    "story": "Mia's cookie bakery and the street around it / economy = all the cookies, boxes and work made on Kim's street, added up together; economic growth = the street making more real stuff this year than last year; real growth vs. higher prices = more cookies at the same price is growth; the same cookies at a higher price is not / An economy grows when a place makes more real goods and services than befo",
+    "date": "2026-11-20T12:21:53+00:00"
+  },
+  {
+    "topic": "How does AI hear your voice?",
+    "area": "ai",
+    "source": "bank",
+    "world": "robot workshop",
+    "opening": "The robot that wins this race listens the way your phone listens to you.",
+    "ending": "It listens in pieces, then picks what makes sense.",
+    "shape": "race",
+    "lead": "mia",
+    "story": "Zoe's robot workshop, where two robots race to understand Mia / sound waves = the tiny wiggles Mia's voice makes in the air, which the robot's ear feels like ripples in water; breaking sound into slices = the new robot chopping Mia's words into a hundred tiny bits of sound, like slicing a loaf into thin pieces; speech recognition = the robot's chip matching each tiny bit to a sound it has practice",
+    "date": "2026-11-21T11:58:51+00:00"
+  }
+]
