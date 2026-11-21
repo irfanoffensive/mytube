@@ -50,3 +50,6 @@ poc/ai_video/out/
 video/explainer/node_modules/
 video/explainer/test-output/
 video/explainer/out/
+data/youtube_token.json
+client_secret*.json
+.env
